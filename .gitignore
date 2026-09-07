@@ -1,0 +1,23 @@
+# Local artifacts / secrets — never commit these
+*.iso
+*.img
+luks-header*.img
+*.deb
+*.log
+*.bak-*
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Any real secrets you might drop in while testing
+*.key
+*.pem
+*.conf.local
+secrets/

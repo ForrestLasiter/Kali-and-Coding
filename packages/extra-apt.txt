@@ -1,0 +1,19 @@
+# extra-apt.txt — your personal add-on packages.
+# The modules install a curated set already; put ANY extras you want here,
+# one per line (# comments allowed), then install them all at once with:
+#
+#   sudo apt install -y $(grep -vE '^\s*(#|$)' packages/extra-apt.txt)
+#
+# Examples (uncomment to use):
+# wireshark
+# hashcat
+# hydra
+# gobuster
+# feroxbuster
+# seclists
+# metasploit-framework
+# bloodhound
+# responder
+# proxychains4
+# yubikey-manager
+# veracrypt          # (not in repos — download .deb from veracrypt.fr)

@@ -1,0 +1,35 @@
+# ~/.config/starship.toml — compact, fast prompt
+add_newline = true
+command_timeout = 800
+
+format = """
+$username$hostname$directory$git_branch$git_status$cmd_duration
+$character"""
+
+[username]
+show_always = true
+style_user = "bold red"      # stands out on a root-capable pentest box
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+format = "[@$hostname](bold yellow) "
+
+[directory]
+truncation_length = 4
+style = "bold cyan"
+
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+[git_status]
+style = "bold yellow"
+
+[cmd_duration]
+min_time = 500
+format = "took [$duration](bold yellow) "
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[✗](bold red)"
