@@ -54,6 +54,8 @@ Boot into BIOS (tap **Enter** at the ThinkPad logo → **F1**):
 - **Config → Thunderbolt(TM) 3 → set BIOS Assist / disable Thunderbolt boot** to
   reduce DMA attack surface (optional).
 - **Security → Memory Protection → Execution Prevention → Enabled**.
+- **Security → Virtualization → Intel (R) Virtualization Technology → Enabled**
+  (and **VT-d → Enabled**) — required for the KVM/QEMU VM lab (module 15).
 - **Security → I/O Port Access** — disable radios/ports you never use (optional).
 - **Startup → UEFI/Legacy Boot → UEFI Only**.
 - Set a **supervisor password** and a **power-on/NVMe (drive) password** for
@@ -108,12 +110,18 @@ It's **idempotent** — re-run any time to pick up new tools or after edits.
 | Module | Contents |
 |---|---|
 | `00-base` | full-upgrade, core CLI, `kali-linux-default` + top-10 metapackages |
-| `10-dev` | zsh + oh-my-zsh + starship, tmux, bat/eza/ripgrep/fd/fzf/delta, **VS Code**, **Docker**, **Go 1.23**, **Node via nvm**, pipx |
+| `10-dev` | zsh + oh-my-zsh + starship, tmux, bat/eza/ripgrep/fd/fzf/delta, **VS Code**, **Docker**, **Go 1.23**, **Node via nvm**, **Rust/rustup**, **gh CLI**, pipx |
+| `15-vmlab` | **KVM/QEMU + virt-manager** + libvirt, OVMF/swtpm (Win11 guests), user added to libvirt/kvm groups |
 | `20-browsers-comms` | Firefox ESR (+ hardening `user.js`), **Brave**, **Signal**, **Element**, Thunderbird, **WireGuard**/OpenVPN, ProtonVPN |
+| `25-anonymity` | **Tor** + torsocks + proxychains4, **Tor Browser**, mat2 (metadata scrub), nyx — pairs with your homevpn/Whonix |
 | `30-osint` | amass, theHarvester, recon-ng, spiderfoot, maltego, sherlock, **ProjectDiscovery suite** (subfinder/httpx/nuclei/dnsx/naabu/katana), holehe — pairs with your **ReconLens** stack |
+| `35-offensive` | **seclists**, ffuf/feroxbuster/gobuster, sqlmap, nikto, wpscan, **netexec**, impacket, **BloodHound**, responder, kerbrute, hashcat/john/hydra, **ghidra**, radare2, gdb+GEF, pwntools, metasploit, searchsploit |
 | `40-productivity` | **Obsidian**, **KeePassXC**, Bitwarden, VLC/mpv, Flameshot, LibreOffice, GIMP, OBS, coding fonts |
 | `50-hardening` | ufw default-deny, ssh off + hardened, **MAC randomization**, sysctl hardening, fail2ban, cautious auto-updates |
+| `52-hwtoken` | **YubiKey**/FIDO2 tooling (ykman, pcscd, pam-u2f/yubico) — PAM left for you to wire (lockout-safe) |
 | `60-thinkpad` | intel-microcode, **fwupd**, **TLP** + charge thresholds, thermald, **fingerprint**, powertop, i915 GuC/HuC |
+| `70-resilience` | **Timeshift** snapshots + **restic** encrypted backups, `snap-before-upgrade` + `backup-home` helper scripts |
+| `80-extras` | **Nerd Font** (prompt glyphs), **Flatpak/Flathub**, **Syncthing** (cloud-free vault/file sync across your homelab) |
 | `90-dotfiles` | `.zshrc`, `.tmux.conf`, `.gitconfig`, starship, nvim config (backs up existing files) |
 
 ### Adding your own packages
@@ -143,9 +151,10 @@ sudo apt install -y $(grep -vE '^\s*(#|$)' packages/extra-apt.txt)
 
 ## Maintenance
 
-Kali is a rolling distro — update deliberately, not automatically:
+Kali is a rolling distro — update deliberately, not automatically. Take a
+Timeshift snapshot first (module 70 gives you a one-shot helper for exactly this):
 ```bash
-sudo apt update && sudo apt full-upgrade
+sudo snap-before-upgrade      # snapshot, then full-upgrade (roll back if it breaks)
 nuclei -update-templates
 ```
 

@@ -77,4 +77,19 @@ fi
 # --- pipx path for the user --------------------------------------------------
 as_user 'pipx ensurepath >/dev/null 2>&1 || true'
 
+# --- GitHub CLI (official apt repo) -----------------------------------------
+add_apt_repo "github-cli" \
+  "https://cli.github.com/packages/githubcli-archive-keyring.gpg" \
+  "deb [arch=amd64 signed-by=KEYRING] https://cli.github.com/packages stable main"
+apt_install gh
+
+# --- Rust toolchain via rustup (as the user) --------------------------------
+if [[ ! -d "$RUN_HOME/.rustup" ]]; then
+  info "installing rustup + stable Rust for $RUN_USER"
+  as_user 'curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path' \
+    || warn "rustup install failed"
+fi
+# dotfiles PATH already includes ~/.cargo/bin via ~/.local/bin? add explicitly:
+grep -q 'cargo/bin' "$RUN_HOME/.zshrc" 2>/dev/null || true  # .zshrc from module 90 sources cargo env
+
 ok "dev module complete"

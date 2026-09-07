@@ -43,11 +43,17 @@ source "$LIB_DIR/common.sh"
 MODULES=(
   "00-base"
   "10-dev"
+  "15-vmlab"
   "20-browsers-comms"
+  "25-anonymity"
   "30-osint"
+  "35-offensive"
   "40-productivity"
   "50-hardening"
+  "52-hwtoken"
   "60-thinkpad"
+  "70-resilience"
+  "80-extras"
   "90-dotfiles"
 )
 
