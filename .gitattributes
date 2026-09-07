@@ -1,0 +1,11 @@
+# Force LF for everything that runs on Linux — CRLF breaks shebangs and
+# shell parsing on the Kali box regardless of the checkout OS.
+* text=auto eol=lf
+*.sh text eol=lf
+provision.sh text eol=lf
+
+# Treat these as binary (never normalize)
+*.iso binary
+*.img binary
+*.deb binary
+*.png binary
