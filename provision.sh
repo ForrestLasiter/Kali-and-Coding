@@ -43,6 +43,7 @@ source "$LIB_DIR/common.sh"
 MODULES=(
   "00-base"
   "10-dev"
+  "12-dev-extras"
   "15-vmlab"
   "20-browsers-comms"
   "25-anonymity"

@@ -7,7 +7,8 @@ plugins=(git docker sudo fzf zsh-autosuggestions zsh-syntax-highlighting)
 [[ -s "$ZSH/oh-my-zsh.sh" ]] && source "$ZSH/oh-my-zsh.sh"
 
 # --- PATH --------------------------------------------------------------------
-export PATH="$HOME/.local/bin:$HOME/go/bin:/usr/local/go/bin:$PATH"
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$HOME/.local/bin:$HOME/go/bin:/usr/local/go/bin:$HOME/.bun/bin:$HOME/.atuin/bin:$HOME/.cargo/bin:$PATH"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
@@ -48,6 +49,16 @@ setopt HIST_IGNORE_ALL_DUPS SHARE_HISTORY INC_APPEND_HISTORY HIST_REDUCE_BLANKS
 
 # --- direnv ------------------------------------------------------------------
 command -v direnv >/dev/null && eval "$(direnv hook zsh)"
+
+# --- zoxide (smart cd: use `z <dir>`) ---------------------------------------
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+
+# --- atuin (magic shell history; rebinds Ctrl-R and Up) ---------------------
+# Loaded after fzf so atuin owns Ctrl-R. Comment out to fall back to fzf/zsh.
+command -v atuin >/dev/null && eval "$(atuin init zsh)"
+
+# --- bun completions ---------------------------------------------------------
+[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
 # --- starship prompt (must be last) -----------------------------------------
 command -v starship >/dev/null && eval "$(starship init zsh)"
