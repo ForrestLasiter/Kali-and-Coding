@@ -1,0 +1,16 @@
+{
+  "// note": "Telemetry/AI-off defaults, installed into both VSCodium and MS VS Code by module 90. Edit freely — this is just the starting point.",
+  "telemetry.telemetryLevel": "off",
+  "redhat.telemetry.enabled": false,
+  "workbench.enableExperiments": false,
+  "workbench.settings.enableNaturalLanguageSearch": false,
+  "extensions.ignoreRecommendations": true,
+  "update.showReleaseNotes": false,
+  "chat.commandCenter.enabled": false,
+  "editor.formatOnSave": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.rulers": [88, 100],
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "terminal.integrated.defaultProfile.linux": "zsh"
+}

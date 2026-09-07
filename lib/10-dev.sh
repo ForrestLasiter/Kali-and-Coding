@@ -36,7 +36,15 @@ if [[ "$(getent passwd "$RUN_USER" | cut -d: -f7)" != "$(command -v zsh)" ]]; th
   chsh -s "$(command -v zsh)" "$RUN_USER" && ok "default shell set to zsh"
 fi
 
-# --- VS Code (Microsoft apt repo) -------------------------------------------
+# --- Editors: VSCodium (daily driver) + MS VS Code (for Remote-SSH) ---------
+# VSCodium is the fully-FOSS, telemetry-free build; MS VS Code is kept only
+# because the proprietary Remote-SSH/Dev Containers pack won't run on VSCodium.
+# Telemetry-off defaults for both are laid down by module 90 (dotfiles).
+add_apt_repo "vscodium" \
+  "https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg" \
+  "deb [signed-by=KEYRING] https://download.vscodium.com/debs vscodium main"
+apt_install codium
+
 add_apt_repo "vscode" \
   "https://packages.microsoft.com/keys/microsoft.asc" \
   "deb [arch=amd64,arm64,armhf signed-by=KEYRING] https://packages.microsoft.com/repos/code stable main"
