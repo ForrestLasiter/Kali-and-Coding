@@ -20,6 +20,9 @@ info()  { echo "${_c_blue}[*]${_c_reset} $*"; }
 ok()    { echo "${_c_green}[+]${_c_reset} $*"; }
 warn()  { WARNINGS+=("$*"); echo "${_c_yellow}[!]${_c_reset} $*" >&2; }
 err()   { echo "${_c_red}[x]${_c_reset} $*" >&2; }
+# note() — an intentional advisory ("here's what I did / FYI"), NOT a failure.
+# Printed but deliberately kept out of the end-of-run warning tally.
+note()  { echo "${_c_yellow}[i]${_c_reset} $*"; }
 hr()    { printf '%s\n' "----------------------------------------------------------------------"; }
 
 # --- run a command as the target (non-root) user ----------------------------
@@ -56,7 +59,7 @@ apt_install() {
     return 0
   fi
   # batch failed — install one at a time so a single bad package can't block the rest
-  warn "batch install failed; retrying individually"
+  info "batch install failed; retrying each package individually"
   local failed=()
   for pkg in "${to_install[@]}"; do
     dpkg -s "$pkg" >/dev/null 2>&1 && continue

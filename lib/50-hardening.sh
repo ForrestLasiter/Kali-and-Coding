@@ -48,7 +48,7 @@ APT::Periodic::Download-Upgradeable-Packages "1";
 APT::Periodic::AutocleanInterval "7";
 APT::Periodic::Unattended-Upgrade "0";
 EOF
-warn "auto-INSTALL left OFF for rolling stability. Run 'sudo apt full-upgrade' regularly."
+note "auto-INSTALL left OFF for rolling stability. Run 'sudo apt full-upgrade' regularly."
 
 # --- fail2ban (only meaningful if you ever expose a service) ----------------
 apt_install fail2ban

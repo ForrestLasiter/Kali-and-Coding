@@ -24,7 +24,7 @@ apt_install flatpak
 flatpak remote-add --if-not-exists flathub \
   https://flathub.org/repo/flathub.flatpakrepo 2>/dev/null \
   && ok "Flathub remote added" || warn "could not add Flathub"
-warn "log out/in (or reboot) so Flatpak apps appear in your menu + PATH"
+note "log out/in (or reboot) so Flatpak apps appear in your menu + PATH"
 
 # --- Syncthing (peer-to-peer sync across your own machines) -----------------
 info "Syncthing"

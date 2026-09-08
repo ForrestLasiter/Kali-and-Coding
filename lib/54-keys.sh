@@ -30,7 +30,7 @@ if ! ls "$SSH_DIR"/id_* >/dev/null 2>&1; then
   info "generating ed25519 SSH key for $RUN_USER"
   as_user 'ssh-keygen -t ed25519 -a 100 -N "" -C "$(whoami)@$(hostname)" -f "$HOME/.ssh/id_ed25519"' \
     || warn "ssh-keygen failed"
-  warn "SSH key created WITHOUT a passphrase. Add one: ssh-keygen -p -f ~/.ssh/id_ed25519"
+  note "SSH key created WITHOUT a passphrase. Add one: ssh-keygen -p -f ~/.ssh/id_ed25519"
 else
   ok "existing SSH key found — leaving it alone"
 fi

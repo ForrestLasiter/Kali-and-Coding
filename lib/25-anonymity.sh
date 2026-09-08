@@ -58,7 +58,7 @@ net.ipv6.conf.all.disable_ipv6=1
 net.ipv6.conf.default.disable_ipv6=1
 EOF
 sysctl --system >/dev/null 2>&1 || true
-warn "IPv6 off system-wide. If a network needs v6, delete /etc/sysctl.d/99-privacy-ipv6.conf"
+note "IPv6 off system-wide. If a network needs v6, delete /etc/sysctl.d/99-privacy-ipv6.conf"
 
 # =============================================================================
 # Mullvad Browser — Tor-Browser-grade anti-fingerprinting, over VPN/direct
@@ -106,7 +106,7 @@ Storage=volatile
 RuntimeMaxUse=64M
 EOF
 systemctl restart systemd-journald 2>/dev/null || true
-warn "logs now live in RAM only — harder to debug past-boot issues (revert: remove that drop-in)"
+note "logs now live in RAM only — harder to debug past-boot issues (revert: remove that drop-in)"
 
 # =============================================================================
 # Identity randomization at boot — random hostname (MAC handled by NM)
