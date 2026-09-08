@@ -35,4 +35,58 @@ else
   warn "libvirt 'default' network missing — create one in virt-manager"
 fi
 
+# --- Whonix import helper (Gateway + Workstation, KVM) ----------------------
+# We do NOT auto-download Whonix: the bundle is large and MUST be signature-
+# verified by you first. This helper automates the tedious libvirt import once
+# you've downloaded, verified, and extracted the official KVM bundle.
+cat > /usr/local/bin/whonix-import <<'EOF'
+#!/usr/bin/env bash
+# Import Whonix Gateway + Workstation (KVM) from an extracted, VERIFIED bundle.
+#
+# DO THIS FIRST (manually — it involves signature verification):
+#   1. Get the Whonix KVM build + its .asc signature: https://www.whonix.org/wiki/KVM
+#   2. Import the Whonix signing key and VERIFY (do not proceed unless GOOD):
+#        gpg --import <whonix-signing-key.asc>
+#        gpg --verify Whonix-*.libvirt.xz.asc Whonix-*.libvirt.xz
+#   3. Extract:  tar -xvf Whonix-*.libvirt.xz
+# THEN:  sudo whonix-import <dir-with-extracted-xml-and-qcow2>
+set -euo pipefail
+[[ $EUID -eq 0 ]] || exec sudo "$0" "$@"
+dir="${1:?usage: whonix-import <extracted-whonix-dir>}"
+cd "$dir"
+VIRSH="virsh -c qemu:///system"
+IMG=/var/lib/libvirt/images
+shopt -s nullglob
+
+# 1) place disk images where the domain XML expects them
+for q in *.qcow2; do
+  if [[ -f "$IMG/$q" ]]; then echo "[=] $IMG/$q already present"; else
+    echo "[*] copying $q -> $IMG/"; cp --reflink=auto "$q" "$IMG/"; fi
+done
+
+# 2) define + start the Whonix virtual networks (external, then internal)
+for netxml in Whonix_external*.xml Whonix_internal*.xml; do
+  [[ -f "$netxml" ]] || continue
+  echo "[*] net-define $netxml"; $VIRSH net-define "$netxml" || echo "[=] already defined"
+done
+for net in Whonix-External Whonix-Internal; do
+  $VIRSH net-autostart "$net" 2>/dev/null || true
+  $VIRSH net-start "$net" 2>/dev/null || echo "[=] $net already active"
+done
+
+# 3) define the domains (VMs)
+for domxml in Whonix-Gateway*.xml Whonix-Workstation*.xml; do
+  [[ -f "$domxml" ]] || continue
+  echo "[*] define $domxml"; $VIRSH define "$domxml" || echo "[=] already defined"
+done
+
+echo
+echo "[+] Whonix imported. Exact VM names: virsh -c qemu:///system list --all"
+echo "    Start the GATEWAY first, then the WORKSTATION, then use virt-manager:"
+echo "      virsh -c qemu:///system start <Whonix-Gateway-name>"
+echo "      virsh -c qemu:///system start <Whonix-Workstation-name>"
+EOF
+chmod +x /usr/local/bin/whonix-import
+ok "installed helper: whonix-import (see docs/ANONYMITY.md for the verify-first flow)"
+
 ok "vmlab module complete"

@@ -26,8 +26,14 @@ daily driver.
 
 1. Download the Whonix **KVM** build (Gateway + Workstation) from
    `whonix.org` and **verify its signature**.
-2. Import both `.qcow2`/libvirt XMLs with `virt-manager` (or the provided
-   `whonix_*.xml` + `virsh define`).
+2. **Verify the signature**, extract, then import with the scripted helper
+   (installed by module `15-vmlab`):
+   ```bash
+   gpg --import <whonix-signing-key.asc>
+   gpg --verify Whonix-*.libvirt.xz.asc Whonix-*.libvirt.xz   # must be GOOD
+   tar -xvf Whonix-*.libvirt.xz
+   sudo whonix-import <extracted-dir>     # defines networks + both VMs
+   ```
 3. Start the **Gateway** first, then the **Workstation**. The Workstation has
    no route to the internet except through the Gateway's Tor.
 4. Do your anonymous work inside the Workstation. Snapshots let you roll back
