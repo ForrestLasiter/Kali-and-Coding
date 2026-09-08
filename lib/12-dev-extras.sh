@@ -58,10 +58,8 @@ dpkg -s bruno >/dev/null 2>&1 || \
 # =============================================================================
 info "shell QoL (zoxide, atuin, tealdeer)"
 apt_install zoxide tealdeer
-# atuin: magic searchable/syncable shell history (not usually in apt)
-if ! command -v atuin >/dev/null 2>&1 && [[ ! -x "$RUN_HOME/.atuin/bin/atuin" ]]; then
-  as_user 'curl --proto "=https" --tlsv1.2 -LsSf https://setup.atuin.sh | sh' || warn "atuin install failed"
-fi
+# atuin: magic searchable/syncable shell history (prebuilt binary, no compile)
+install_gh_release_bin atuin atuinsh/atuin 'atuin-x86_64-unknown-linux-gnu\.tar\.gz$' atuin
 as_user 'command -v tldr >/dev/null 2>&1 && tldr --update >/dev/null 2>&1 || true'
 
 # =============================================================================

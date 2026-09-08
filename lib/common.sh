@@ -96,6 +96,43 @@ add_apt_repo() {
   APT_UPDATED=0  # force a refresh next install
 }
 
+# --- install prebuilt binaries from a release archive -----------------------
+# install_release <name> <url> <bin>...  — download a .tar.gz/.zip, find each
+# named executable inside, and install it into /usr/local/bin.
+install_release() {
+  local name="$1" url="$2"; shift 2
+  local bins=("$@")
+  command -v "${bins[0]}" >/dev/null 2>&1 && { ok "$name already installed"; return 0; }
+  local tmp; tmp="$(mktemp -d)"
+  info "downloading $name release binary"
+  if ! curl -fsSL "$url" -o "$tmp/a"; then warn "download failed: $name"; rm -rf "$tmp"; return 0; fi
+  mkdir -p "$tmp/x"
+  case "$url" in
+    *.zip) unzip -qo "$tmp/a" -d "$tmp/x" 2>/dev/null || { warn "unzip failed: $name"; rm -rf "$tmp"; return 0; } ;;
+    *)     tar -xf "$tmp/a" -C "$tmp/x" 2>/dev/null || { warn "extract failed: $name"; rm -rf "$tmp"; return 0; } ;;
+  esac
+  local b found
+  for b in "${bins[@]}"; do
+    found="$(find "$tmp/x" -type f -name "$b" | head -1)"
+    if [[ -n "$found" ]]; then install -m 0755 "$found" "/usr/local/bin/$b" && ok "installed $b -> /usr/local/bin"; else
+      warn "$b not found in $name archive"; fi
+  done
+  rm -rf "$tmp"
+}
+
+# install_gh_release_bin <name> <owner/repo> <asset-regex> <bin>...
+# resolve the latest release's matching asset via the GitHub API, then install.
+install_gh_release_bin() {
+  local name="$1" repo="$2" pat="$3"; shift 3
+  command -v "$1" >/dev/null 2>&1 && { ok "$name already installed"; return 0; }
+  local url
+  url="$(curl -fsSL "https://api.github.com/repos/$repo/releases/latest" 2>/dev/null \
+        | grep -oE '"browser_download_url":[[:space:]]*"[^"]+"' | cut -d'"' -f4 \
+        | grep -E "$pat" | head -1)"
+  [[ -z "$url" ]] && { warn "no matching release asset for $name ($pat)"; return 0; }
+  install_release "$name" "$url" "$@"
+}
+
 # --- download a .deb and install it ----------------------------------------
 install_deb() {
   local name="$1" url="$2"

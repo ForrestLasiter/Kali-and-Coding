@@ -32,18 +32,17 @@ apt_or_go   glow  glow    "github.com/charmbracelet/glow@latest"
 # Terminal file managers
 # =============================================================================
 info "terminal file managers (yazi + nnn)"
-apt_install nnn yazi
-if ! command -v yazi >/dev/null 2>&1; then
-  as_user 'source $HOME/.cargo/env 2>/dev/null; cargo install --locked yazi-fm yazi-cli' \
-    || warn "yazi install failed"
-fi
+apt_install nnn
+# yazi: prebuilt binary (yazi + its `ya` helper), no cargo compile
+install_gh_release_bin yazi sxyazi/yazi 'yazi-x86_64-unknown-linux-gnu\.zip$' yazi ya
 
 # =============================================================================
 # Cheatsheets + command correction
 # =============================================================================
 info "navi (cheatsheets) + thefuck (command correction)"
 apt_install thefuck
-apt_or_cargo navi navi navi
+# navi: prebuilt binary (asset name carries the version, so match by suffix)
+install_gh_release_bin navi denisidoro/navi 'x86_64-unknown-linux-musl\.tar\.gz$' navi
 
 # =============================================================================
 # Better terminal emulator
