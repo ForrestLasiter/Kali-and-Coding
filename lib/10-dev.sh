@@ -44,12 +44,53 @@ add_apt_repo "vscodium" \
   "deb [signed-by=KEYRING] https://download.vscodium.com/debs vscodium main"
 apt_install codium
 
-# open-remote-ssh — Remote-SSH capability for VSCodium (remote dev into your
-# VMs / homelab over SSH), the open replacement for MS's proprietary pack.
+# VSCodium extensions (from Open VSX). MS-proprietary ones (Pylance, the MS
+# Python/debugpy pack, Remote pack) are NOT on Open VSX, so open equivalents
+# are used instead (basedpyright, Ruff, open-remote-ssh). Each install is
+# best-effort: a failure warns and continues.
 if command -v codium >/dev/null 2>&1; then
-  info "installing open-remote-ssh extension into VSCodium"
-  as_user 'codium --install-extension jeanp413.open-remote-ssh --force' \
-    || warn "open-remote-ssh install failed (add it from Open VSX in the UI)"
+  info "installing VSCodium extensions from Open VSX"
+  VSCODIUM_EXTS=(
+    # --- remote dev ---
+    jeanp413.open-remote-ssh
+    # --- python ---
+    charliermarsh.ruff              # lint + format (Ruff)
+    detachhead.basedpyright         # language server / type checker (open Pylance alt)
+    # --- javascript / typescript / web ---
+    dbaeumer.vscode-eslint
+    esbenp.prettier-vscode
+    astro-build.astro-vscode        # your portfolio
+    bradlc.vscode-tailwindcss
+    # --- APIs / data formats ---
+    humao.rest-client               # send HTTP from .http files (great w/ FastAPI)
+    42crunch.vscode-openapi         # OpenAPI/Swagger editor + linting
+    redhat.vscode-yaml              # yaml (openapi, compose, k8s)
+    tamasfe.even-better-toml        # pyproject.toml, cargo, starship
+    mikestead.dotenv                # .env highlighting
+    # --- containers ---
+    ms-azuretools.vscode-docker
+    # --- go / rust ---
+    golang.go
+    rust-lang.rust-analyzer
+    # --- shell (you write bash) ---
+    timonwong.shellcheck
+    foxundermoon.shell-format
+    # --- git + quality-of-life ---
+    eamodio.gitlens
+    usernamehw.errorlens            # inline errors/warnings
+    editorconfig.editorconfig
+    gruntfuggly.todo-tree
+    streetsidesoftware.code-spell-checker
+    yzhang.markdown-all-in-one
+    pkief.material-icon-theme
+  )
+  for ext in "${VSCODIUM_EXTS[@]}"; do
+    if as_user "codium --install-extension $ext --force" >/dev/null 2>&1; then
+      ok "ext: $ext"
+    else
+      warn "ext failed (add from Open VSX UI): $ext"
+    fi
+  done
 fi
 
 # If a previous provisioning run installed MS VS Code, drop it (superseded).

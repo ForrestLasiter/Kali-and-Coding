@@ -110,7 +110,7 @@ It's **idempotent** — re-run any time to pick up new tools or after edits.
 | Module | Contents |
 |---|---|
 | `00-base` | full-upgrade, core CLI, `kali-linux-default` + top-10 metapackages |
-| `10-dev` | zsh + oh-my-zsh + starship, tmux, bat/eza/ripgrep/fd/fzf/delta, **VSCodium** (telemetry-free) + **open-remote-ssh**, **Docker**, **Go 1.23**, **Node via nvm**, **Rust/rustup**, **gh CLI**, pipx |
+| `10-dev` | zsh + oh-my-zsh + starship, tmux, bat/eza/ripgrep/fd/fzf/delta, **VSCodium** (telemetry-free) + **~25 Open VSX extensions** (open-remote-ssh, Ruff, basedpyright, ESLint, Prettier, Astro, REST Client, OpenAPI, Docker, Go, rust-analyzer, GitLens, ErrorLens…), **Docker**, **Go 1.23**, **Node via nvm**, **Rust/rustup**, **gh CLI**, pipx |
 | `12-dev-extras` | **uv** (Python) + ruff/mypy/black, **pnpm/yarn** (corepack) + **Bun**, **lazygit**/tig/git-lfs, DB clients (**pgcli**/DBeaver/psql/sqlite3/redis), **httpie**/**Bruno**, **zoxide**/**atuin**/tldr, just/watchexec/hyperfine/tokei, lazydocker/dive, **age/sops** |
 | `15-vmlab` | **KVM/QEMU + virt-manager** + libvirt, OVMF/swtpm (Win11 guests), user added to libvirt/kvm groups |
 | `20-browsers-comms` | Firefox ESR (+ hardening `user.js`), **Brave**, **Signal**, **Element**, Thunderbird, **WireGuard**/OpenVPN, ProtonVPN |
