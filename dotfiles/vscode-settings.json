@@ -1,5 +1,5 @@
 {
-  "// note": "Telemetry/AI-off defaults, installed into both VSCodium and MS VS Code by module 90. Edit freely — this is just the starting point.",
+  "// note": "Telemetry/AI-off defaults, installed into VSCodium by module 90. Edit freely — this is just the starting point.",
   "telemetry.telemetryLevel": "off",
   "redhat.telemetry.enabled": false,
   "workbench.enableExperiments": false,

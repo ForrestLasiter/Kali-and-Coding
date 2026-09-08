@@ -28,11 +28,8 @@ install_dotfile "$DOTFILES_DIR/starship.toml" "$RUN_HOME/.config/starship.toml"
 install -d -o "$RUN_USER" -g "$RUN_USER" "$RUN_HOME/.config/nvim"
 install_dotfile "$DOTFILES_DIR/init.vim"     "$RUN_HOME/.config/nvim/init.vim"
 
-# editor settings: telemetry-off defaults for both VSCodium and MS VS Code.
-# (dir names: VSCodium -> ~/.config/VSCodium, MS VS Code -> ~/.config/Code)
-for ed in VSCodium Code; do
-  install -d -o "$RUN_USER" -g "$RUN_USER" "$RUN_HOME/.config/$ed/User"
-  install_dotfile "$DOTFILES_DIR/vscode-settings.json" "$RUN_HOME/.config/$ed/User/settings.json"
-done
+# editor settings: telemetry-off defaults for VSCodium (~/.config/VSCodium).
+install -d -o "$RUN_USER" -g "$RUN_USER" "$RUN_HOME/.config/VSCodium/User"
+install_dotfile "$DOTFILES_DIR/vscode-settings.json" "$RUN_HOME/.config/VSCodium/User/settings.json"
 
 ok "dotfiles module complete — open a new shell (or 'exec zsh') to load them"

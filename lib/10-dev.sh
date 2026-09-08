@@ -36,19 +36,28 @@ if [[ "$(getent passwd "$RUN_USER" | cut -d: -f7)" != "$(command -v zsh)" ]]; th
   chsh -s "$(command -v zsh)" "$RUN_USER" && ok "default shell set to zsh"
 fi
 
-# --- Editors: VSCodium (daily driver) + MS VS Code (for Remote-SSH) ---------
-# VSCodium is the fully-FOSS, telemetry-free build; MS VS Code is kept only
-# because the proprietary Remote-SSH/Dev Containers pack won't run on VSCodium.
-# Telemetry-off defaults for both are laid down by module 90 (dotfiles).
+# --- Editor: VSCodium (fully-FOSS, telemetry-free) --------------------------
+# Remote dev is handled by the open-remote-ssh extension (Open VSX), so no MS
+# VS Code build is needed. Telemetry-off defaults come from module 90.
 add_apt_repo "vscodium" \
   "https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg" \
   "deb [signed-by=KEYRING] https://download.vscodium.com/debs vscodium main"
 apt_install codium
 
-add_apt_repo "vscode" \
-  "https://packages.microsoft.com/keys/microsoft.asc" \
-  "deb [arch=amd64,arm64,armhf signed-by=KEYRING] https://packages.microsoft.com/repos/code stable main"
-apt_install code
+# open-remote-ssh — Remote-SSH capability for VSCodium (remote dev into your
+# VMs / homelab over SSH), the open replacement for MS's proprietary pack.
+if command -v codium >/dev/null 2>&1; then
+  info "installing open-remote-ssh extension into VSCodium"
+  as_user 'codium --install-extension jeanp413.open-remote-ssh --force' \
+    || warn "open-remote-ssh install failed (add it from Open VSX in the UI)"
+fi
+
+# If a previous provisioning run installed MS VS Code, drop it (superseded).
+if dpkg -s code >/dev/null 2>&1; then
+  info "removing MS VS Code (replaced by VSCodium + open-remote-ssh)"
+  apt-get purge -y code || warn "could not purge code"
+  rm -f /etc/apt/sources.list.d/vscode.list /usr/share/keyrings/vscode.gpg
+fi
 
 # --- Docker (Kali repo package is fine and well-integrated) ------------------
 info "Docker engine"

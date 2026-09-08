@@ -110,7 +110,7 @@ It's **idempotent** — re-run any time to pick up new tools or after edits.
 | Module | Contents |
 |---|---|
 | `00-base` | full-upgrade, core CLI, `kali-linux-default` + top-10 metapackages |
-| `10-dev` | zsh + oh-my-zsh + starship, tmux, bat/eza/ripgrep/fd/fzf/delta, **VSCodium** (daily) + **VS Code** (for Remote-SSH), **Docker**, **Go 1.23**, **Node via nvm**, **Rust/rustup**, **gh CLI**, pipx |
+| `10-dev` | zsh + oh-my-zsh + starship, tmux, bat/eza/ripgrep/fd/fzf/delta, **VSCodium** (telemetry-free) + **open-remote-ssh**, **Docker**, **Go 1.23**, **Node via nvm**, **Rust/rustup**, **gh CLI**, pipx |
 | `12-dev-extras` | **uv** (Python) + ruff/mypy/black, **pnpm/yarn** (corepack) + **Bun**, **lazygit**/tig/git-lfs, DB clients (**pgcli**/DBeaver/psql/sqlite3/redis), **httpie**/**Bruno**, **zoxide**/**atuin**/tldr, just/watchexec/hyperfine/tokei, lazydocker/dive, **age/sops** |
 | `15-vmlab` | **KVM/QEMU + virt-manager** + libvirt, OVMF/swtpm (Win11 guests), user added to libvirt/kvm groups |
 | `20-browsers-comms` | Firefox ESR (+ hardening `user.js`), **Brave**, **Signal**, **Element**, Thunderbird, **WireGuard**/OpenVPN, ProtonVPN |
@@ -123,7 +123,7 @@ It's **idempotent** — re-run any time to pick up new tools or after edits.
 | `60-thinkpad` | intel-microcode, **fwupd**, **TLP** + charge thresholds, thermald, **fingerprint**, powertop, i915 GuC/HuC |
 | `70-resilience` | **Timeshift** snapshots + **restic** encrypted backups, `snap-before-upgrade` + `backup-home` helper scripts |
 | `80-extras` | **Nerd Font** (prompt glyphs), **Flatpak/Flathub**, **Syncthing** (cloud-free vault/file sync across your homelab) |
-| `90-dotfiles` | `.zshrc`, `.tmux.conf`, `.gitconfig`, starship, nvim config, telemetry-off editor `settings.json` for VSCodium + VS Code (backs up existing files) |
+| `90-dotfiles` | `.zshrc`, `.tmux.conf`, `.gitconfig`, starship, nvim config, telemetry-off VSCodium `settings.json` (backs up existing files) |
 
 ### Adding your own packages
 Edit `packages/extra-apt.txt`, then:
