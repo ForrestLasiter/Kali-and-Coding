@@ -60,5 +60,28 @@ command -v atuin >/dev/null && eval "$(atuin init zsh)"
 # --- bun completions ---------------------------------------------------------
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
+# --- thefuck (correct the last mistyped command with `fuck`) -----------------
+command -v thefuck >/dev/null && eval "$(thefuck --alias)"
+
+# --- navi cheatsheets widget (Ctrl-G) ---------------------------------------
+command -v navi >/dev/null && eval "$(navi widget zsh)"
+
+# --- yazi: `y` opens the file manager and cd's to where you leave it ---------
+if command -v yazi >/dev/null; then
+  y() {
+    local tmp cwd
+    tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+    yazi "$@" --cwd-file="$tmp"
+    # NOTE: `cat` is aliased to batcat above, so use `command cat` here
+    if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+      builtin cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+  }
+fi
+
+# fastfetch on new shell? uncomment if you want the system banner:
+# command -v fastfetch >/dev/null && fastfetch
+
 # --- starship prompt (must be last) -----------------------------------------
 command -v starship >/dev/null && eval "$(starship init zsh)"

@@ -55,6 +55,7 @@ MODULES=(
   "60-thinkpad"
   "70-resilience"
   "80-extras"
+  "82-qol"
   "90-dotfiles"
 )
 

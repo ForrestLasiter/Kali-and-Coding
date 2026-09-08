@@ -123,6 +123,7 @@ It's **idempotent** — re-run any time to pick up new tools or after edits.
 | `60-thinkpad` | intel-microcode, **fwupd**, **TLP** + charge thresholds, thermald, **fingerprint**, powertop, i915 GuC/HuC |
 | `70-resilience` | **Timeshift** snapshots + **restic** encrypted backups, `snap-before-upgrade` + `backup-home` helper scripts |
 | `80-extras` | **Nerd Font** (prompt glyphs), **Flatpak/Flathub**, **Syncthing** (cloud-free vault/file sync across your homelab) |
+| `82-qol` | CLI: duf/dust/procs/sd/glow/fastfetch, **yazi**+nnn, navi+thefuck, **kitty**. Desktop (XFCE): **rofi** launcher, picom, **udiskie** automount, **gammastep** night light, Papirus+Arc themes, zathura/peek/xarchiver/gpick |
 | `90-dotfiles` | `.zshrc`, `.tmux.conf`, `.gitconfig`, starship, nvim config, telemetry-off VSCodium `settings.json` (backs up existing files) |
 
 ### Adding your own packages
