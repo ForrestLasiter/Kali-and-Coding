@@ -3,29 +3,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
+  /* Committed dark design — always renders dark regardless of the viewer's
+     OS/browser theme (color-scheme:dark also darkens scrollbars/controls). */
   :root{
-    --bg:#f3f6fc; --surface:#ffffff; --surface-2:#eaeff8; --border:#d3dcef;
-    --text:#0e1626; --muted:#54617c; --faint:#7c88a1;
-    --accent:#1f6feb; --violet:#6a52e6; --ok:#1a7f37; --warn:#9a6700; --danger:#cf222e;
-    --rail:#c3cee4;
-    --ph-foundation:#64748b; --ph-dev:#1f6feb; --ph-sec:#6a52e6;
-    --ph-sys:#1a7f37; --ph-fin:#9a6700;
-    --shadow:0 1px 2px rgba(16,22,38,.06),0 8px 24px rgba(16,22,38,.06);
-    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-    --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-  }
-  @media (prefers-color-scheme:dark){
-    :root:not([data-theme="light"]){
-      --bg:#0a0e17; --surface:#111826; --surface-2:#161f30; --border:#26314a;
-      --text:#e7ecf7; --muted:#9dabc4; --faint:#6f7d99;
-      --accent:#4d90ff; --violet:#9a8bff; --ok:#3fb950; --warn:#d9a441; --danger:#ff6a63;
-      --rail:#2b3853;
-      --ph-foundation:#8595ad; --ph-dev:#4d90ff; --ph-sec:#9a8bff;
-      --ph-sys:#3fb950; --ph-fin:#d9a441;
-      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
-    }
-  }
-  :root[data-theme="dark"]{
+    color-scheme: dark;
     --bg:#0a0e17; --surface:#111826; --surface-2:#161f30; --border:#26314a;
     --text:#e7ecf7; --muted:#9dabc4; --faint:#6f7d99;
     --accent:#4d90ff; --violet:#9a8bff; --ok:#3fb950; --warn:#d9a441; --danger:#ff6a63;
@@ -33,6 +14,8 @@
     --ph-foundation:#8595ad; --ph-dev:#4d90ff; --ph-sec:#9a8bff;
     --ph-sys:#3fb950; --ph-fin:#d9a441;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   }
 
   *{box-sizing:border-box}
