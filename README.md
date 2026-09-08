@@ -99,12 +99,18 @@ That's it. Reboot when it finishes (for docker group, kernel/i915, firmware).
 ### Running pieces individually
 
 ```bash
-sudo ./provision.sh list          # show modules
+./provision.sh list               # show modules (no root needed)
+./provision.sh --dry-run          # print the install plan, change nothing
+./provision.sh doctor             # preflight checks (OS/arch/disk/network)
 sudo ./provision.sh 10 30         # only dev + osint
 sudo ./provision.sh 60            # only ThinkPad hardware tuning
 ```
 
 It's **idempotent** — re-run any time to pick up new tools or after edits.
+Every real run is **logged** to `/var/log/kali-t490s-<timestamp>.log`, and ends
+with a **summary of any warnings** (e.g. packages that failed to install).
+`--dry-run` and `doctor`/`list` need no root; the full run runs a preflight
+first and aborts early if there's no network.
 
 ---
 
@@ -120,14 +126,20 @@ It's **idempotent** — re-run any time to pick up new tools or after edits.
 | `25-anonymity` | **Tor**/torsocks/proxychains4, **Tor Browser** + **Mullvad Browser**, **dnscrypt-proxy** (encrypted DNS) + IPv6 leak-off, mat2, **kalitorify**, anti-forensics (BleachBit/secure-delete + `wipe-traces`), journald-in-RAM, boot hostname randomization, **`vpn-killswitch`** helper — see [docs/ANONYMITY.md](docs/ANONYMITY.md) |
 | `30-osint` | amass, theHarvester, recon-ng, spiderfoot, maltego, sherlock, **ProjectDiscovery suite** (subfinder/httpx/nuclei/dnsx/naabu/katana), holehe — pairs with a self-hosted recon stack |
 | `35-offensive` | **seclists**, ffuf/feroxbuster/gobuster, sqlmap, nikto, wpscan, **netexec**, impacket, **BloodHound**, responder, kerbrute, hashcat/john/hydra, **ghidra**, radare2, gdb+GEF, pwntools, metasploit, searchsploit |
+| `36-webapp` | **OWASP ZAP**, **mitmproxy**, wapiti, commix (Burp ships with Kali; Caido optional) |
+| `37-wireless` | **realtek-rtl88xxau DKMS** (external-adapter injection) + aircrack-ng, kismet, wifite, bettercap, hcxtools, reaver, airgeddon |
+| `38-pivoting` | **chisel**, **ligolo-ng**, **sliver**, socat — *authorized engagements only* |
 | `40-productivity` | **Obsidian**, **KeePassXC**, Bitwarden, VLC/mpv, Flameshot, LibreOffice, GIMP, OBS, coding fonts |
+| `45-engagements` | **pandoc + LaTeX** (Markdown→PDF reports), CherryTree, `~/engagements` scaffold + **`new-engagement`** helper |
 | `50-hardening` | ufw default-deny, ssh off + hardened, **MAC randomization**, sysctl hardening, fail2ban, cautious auto-updates |
 | `52-hwtoken` | **YubiKey**/FIDO2 tooling (ykman, pcscd, pam-u2f/yubico) — PAM left for you to wire (lockout-safe) |
+| `54-keys` | **ed25519 SSH key** bootstrap + hardened `~/.ssh/config`, keychain agent, GPG hardening (key creation left to you) |
 | `60-thinkpad` | intel-microcode, **fwupd**, **TLP** + charge thresholds, thermald, **fingerprint**, powertop, i915 GuC/HuC |
 | `70-resilience` | **Timeshift** snapshots + **restic** encrypted backups, `snap-before-upgrade` + `backup-home` helper scripts |
 | `80-extras` | **Nerd Font** (prompt glyphs), **Flatpak/Flathub**, **Syncthing** (cloud-free vault/file sync across your own machines) |
 | `82-qol` | CLI: duf/dust/procs/sd/glow/fastfetch, **yazi**+nnn, navi+thefuck, **kitty**. Desktop (XFCE): **rofi** launcher, picom, **udiskie** automount, **gammastep** night light, Papirus+Arc themes, zathura/peek/xarchiver/gpick |
 | `90-dotfiles` | `.zshrc`, `.tmux.conf`, `.gitconfig`, starship, nvim config, telemetry-off VSCodium `settings.json` (backs up existing files) |
+| `95-firstboot` | installs **`first-boot-checklist`** — interactive walk-through of the post-install manual steps |
 
 ### Adding your own packages
 Edit `packages/extra-apt.txt`, then:

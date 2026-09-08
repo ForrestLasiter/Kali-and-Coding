@@ -5,9 +5,11 @@
 # --- pretty output ----------------------------------------------------------
 _c_reset=$'\033[0m'; _c_blue=$'\033[1;34m'; _c_yellow=$'\033[1;33m'
 _c_red=$'\033[1;31m'; _c_green=$'\033[1;32m'
+# WARNINGS collects every warn() message so provision.sh can print a summary.
+WARNINGS=()
 info()  { echo "${_c_blue}[*]${_c_reset} $*"; }
 ok()    { echo "${_c_green}[+]${_c_reset} $*"; }
-warn()  { echo "${_c_yellow}[!]${_c_reset} $*" >&2; }
+warn()  { WARNINGS+=("$*"); echo "${_c_yellow}[!]${_c_reset} $*" >&2; }
 err()   { echo "${_c_red}[x]${_c_reset} $*" >&2; }
 hr()    { printf '%s\n' "----------------------------------------------------------------------"; }
 

@@ -60,6 +60,11 @@ command -v atuin >/dev/null && eval "$(atuin init zsh)"
 # --- bun completions ---------------------------------------------------------
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
+# --- ssh-agent via keychain (loads your key once per boot) -------------------
+if command -v keychain >/dev/null && [[ -f "$HOME/.ssh/id_ed25519" ]]; then
+  eval "$(keychain --eval --quiet --agents ssh id_ed25519)"
+fi
+
 # --- thefuck (correct the last mistyped command with `fuck`) -----------------
 command -v thefuck >/dev/null && eval "$(thefuck --alias)"
 

@@ -1,0 +1,5 @@
+# shellcheck configuration for the provisioning scripts.
+# Modules are sourced by provision.sh and rely on helpers/vars from common.sh,
+# so a few source/var checks are noise here.
+external-sources=true
+disable=SC1090,SC1091,SC2154,SC2034
