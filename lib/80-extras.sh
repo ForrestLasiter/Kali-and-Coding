@@ -26,7 +26,7 @@ flatpak remote-add --if-not-exists flathub \
   && ok "Flathub remote added" || warn "could not add Flathub"
 warn "log out/in (or reboot) so Flatpak apps appear in your menu + PATH"
 
-# --- Syncthing (peer-to-peer sync across your homelab) ----------------------
+# --- Syncthing (peer-to-peer sync across your own machines) -----------------
 info "Syncthing"
 apt_install syncthing
 # system-provided per-user template unit: syncthing@<user>.service

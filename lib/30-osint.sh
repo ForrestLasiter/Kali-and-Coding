@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 30-osint.sh — OSINT / recon tooling beyond Kali defaults.
-# Complements your ReconLens stack (self-hosted attack-surface monitor).
+# Complements a self-hosted recon / attack-surface monitoring stack.
 
 # --- packaged in Kali repos --------------------------------------------------
 info "OSINT packages from Kali repos"
@@ -48,11 +48,11 @@ for t in "${pipx_tools[@]}"; do
   as_user "pipx install $t" || warn "pipx install failed: $t"
 done
 
-# --- ReconLens hook ----------------------------------------------------------
+# --- self-hosted recon stack hook -------------------------------------------
 cat <<EOF
-${_c_blue}[*]${_c_reset} ReconLens: this laptop is Docker-ready. To bring up your
-    self-hosted OSINT/attack-surface monitor, clone your reconlens repo and run
-    its compose stack. (Scope-gating rules from that project still apply.)
+${_c_blue}[*]${_c_reset} This laptop is Docker-ready: bring up your own self-hosted
+    OSINT / attack-surface monitor by cloning its repo and running its compose
+    stack. (Respect the scope-gating rules of whatever recon tooling you run.)
 EOF
 
 ok "osint module complete"

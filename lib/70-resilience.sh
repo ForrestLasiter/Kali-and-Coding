@@ -23,7 +23,7 @@ cat > /usr/local/bin/backup-home <<'EOF'
 #!/usr/bin/env bash
 # Encrypted backup of $HOME with restic. Configure the two vars below first:
 #   export RESTIC_REPOSITORY=...   (e.g. /mnt/backup/restic  or  sftp:user@host:/path
-#                                    or  rest:https://...  — a drive on your homelab)
+#                                    or  rest:https://...  — a drive on your network/NAS)
 #   export RESTIC_PASSWORD_FILE=$HOME/.config/restic-pass   (chmod 600)
 set -euo pipefail
 : "${RESTIC_REPOSITORY:?set RESTIC_REPOSITORY}"

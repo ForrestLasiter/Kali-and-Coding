@@ -27,7 +27,7 @@ add_apt_repo "element-io" \
 apt_install element-desktop
 
 # --- VPN clients -------------------------------------------------------------
-# WireGuard is the primary client (also used by your homevpn hub).
+# WireGuard is the primary client (works with any self-hosted WireGuard hub).
 apt_install wireguard wireguard-tools openvpn network-manager-openvpn-gnome resolvconf
 
 # ProtonVPN official repo (optional GUI). Uses a versioned release .deb that

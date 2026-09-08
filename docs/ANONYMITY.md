@@ -39,7 +39,8 @@ daily driver.
 4. Do your anonymous work inside the Workstation. Snapshots let you roll back
    to a clean state after each session.
 
-You already run Whonix on your Proxmox homelab — this is the same model, local.
+Whonix runs the same way on any KVM host (a Proxmox homelab, or this laptop) —
+this is that model, running locally.
 
 ## Tails USB (highest assurance, amnesic)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 25-anonymity.sh — Tor, proxying, leak prevention, anti-forensics, and
-# de-fingerprinted browsing. Complements your homevpn / Whonix workflow.
+# de-fingerprinted browsing. Complements a self-hosted VPN / Whonix workflow.
 #
 # READ docs/ANONYMITY.md first. Key truth: real anonymity comes from
 # COMPARTMENTALIZATION (Whonix VMs / Tails), not from tools bolted onto a
