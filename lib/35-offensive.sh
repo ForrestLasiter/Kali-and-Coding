@@ -16,8 +16,13 @@ apt_install \
   responder \
   enum4linux-ng smbmap \
   evil-winrm \
-  kerbrute \
   bloodhound                    # pulls neo4j; heavy but you asked for it
+
+# kerbrute isn't in Kali's apt — install via go
+if command -v kerbrute >/dev/null 2>&1 || as_user 'test -x "$HOME/go/bin/kerbrute"'; then :; else
+  as_user 'export PATH=$PATH:/usr/local/go/bin GOPATH=$HOME/go; go install github.com/ropnop/kerbrute@latest' \
+    || warn "kerbrute install failed"
+fi
 
 info "Password cracking"
 apt_install hashcat john hydra medusa hashid hash-identifier

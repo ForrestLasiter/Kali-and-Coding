@@ -9,8 +9,7 @@ apt_install \
   yubikey-manager \
   yubikey-personalization \
   yubioath-desktop \
-  pcscd libpam-u2f libpam-yubico \
-  libu2f-udev
+  pcscd libpam-u2f libpam-yubico
 
 # smartcard daemon (needed for OATH/PIV/OpenPGP on the key)
 systemctl enable --now pcscd 2>/dev/null || warn "could not enable pcscd"

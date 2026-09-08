@@ -50,6 +50,10 @@ apt_install codium
 # best-effort: a failure warns and continues.
 if command -v codium >/dev/null 2>&1; then
   info "installing VSCodium extensions from Open VSX"
+  # codium writes its extension cache under ~/.config/VSCodium; make sure the
+  # user owns it (it can end up root-owned, which makes every install EACCES).
+  install -d "$RUN_HOME/.config/VSCodium"
+  chown -R "$RUN_USER:$RUN_USER" "$RUN_HOME/.config" 2>/dev/null || true
   VSCODIUM_EXTS=(
     # --- remote dev ---
     jeanp413.open-remote-ssh

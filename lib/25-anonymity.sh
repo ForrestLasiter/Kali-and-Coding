@@ -15,7 +15,7 @@
 # =============================================================================
 info "Tor, proxychains, torsocks, metadata scrubbing"
 apt_install \
-  tor torsocks proxychains4 mat2 torbrowser-launcher nyx
+  tor torsocks proxychains4 mat2 torbrowser-launcher
 
 PCONF="/etc/proxychains4.conf"
 if [[ -f "$PCONF" ]]; then

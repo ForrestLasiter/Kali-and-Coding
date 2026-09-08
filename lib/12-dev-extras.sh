@@ -68,7 +68,13 @@ as_user 'command -v tldr >/dev/null 2>&1 && tldr --update >/dev/null 2>&1 || tru
 # Dev utilities + secrets
 # =============================================================================
 info "dev utilities (just, watchexec, hyperfine, tokei, entr) + secrets (age/sops)"
-apt_install just watchexec hyperfine tokei entr age sops
+# watchexec + sops aren't in Kali's apt; installed via cargo / go below.
+apt_install just hyperfine tokei entr age
+# sops via go (getsops) — not packaged in Kali
+if command -v sops >/dev/null 2>&1 || as_user 'test -x "$HOME/go/bin/sops"'; then :; else
+  as_user 'export PATH=$PATH:/usr/local/go/bin GOPATH=$HOME/go; go install github.com/getsops/sops/v3/cmd/sops@latest' \
+    || warn "sops install failed"
+fi
 
 # cargo fallbacks for the Rust tools if the repo didn't carry them
 for pair in "just:just" "watchexec:watchexec-cli"; do
