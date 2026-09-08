@@ -170,7 +170,8 @@ if ! preflight; then
 fi
 
 run_module() {
-  local name="$1" file="$LIB_DIR/${name}.sh"
+  local name="$1"
+  local file="$LIB_DIR/${name}.sh"
   [[ -f "$file" ]] || { warn "module not found: $name"; return 0; }
   hr; info "=== MODULE: $name ==="
   # shellcheck disable=SC1090
