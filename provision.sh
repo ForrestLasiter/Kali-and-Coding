@@ -184,7 +184,9 @@ hr
 if [[ "${#WARNINGS[@]}" -eq 0 ]]; then
   ok "Completed with no warnings."
 else
-  warn "Completed with ${#WARNINGS[@]} warning(s):"
+  # print directly, not via warn() — warn() appends to WARNINGS and would
+  # both miscount and list this header line as a warning of its own.
+  echo "${_c_yellow}[!]${_c_reset} Completed with ${#WARNINGS[@]} warning(s):" >&2
   printf '    - %s\n' "${WARNINGS[@]}"
 fi
 info "Full log: $LOGFILE"
