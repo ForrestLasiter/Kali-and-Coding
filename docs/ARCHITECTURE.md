@@ -1,8 +1,8 @@
 # Architecture — how the provisioning works
 
 Visual documentation of the scripting process. These diagrams render on GitHub.
-For a standalone interactive view, see the published visual (link in the repo
-README / shared separately).
+Interactive standalone version:
+<https://claude.ai/code/artifact/0d160ff4-1f5d-4377-a941-aa857322a766> (private).
 
 ---
 

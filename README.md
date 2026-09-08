@@ -9,6 +9,9 @@ dotfiles.
 > **Approach:** official installer + post-install script (chosen deliberately
 > over a baked custom ISO — this is far easier to maintain, re-run, and tweak).
 
+📊 **Visual walkthrough of the scripting process:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+(diagrams render on GitHub) · 🔒 **Anonymity/OPSEC guide:** [docs/ANONYMITY.md](docs/ANONYMITY.md)
+
 ## Hardware reality check (good news)
 
 The T490s is one of the best-supported laptops for Linux. Nothing here needs
