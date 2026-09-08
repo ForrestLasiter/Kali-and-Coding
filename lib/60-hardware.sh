@@ -29,17 +29,19 @@ apt_install fwupd
 
 # --- GPU drivers / firmware (detected) --------------------------------------
 if [[ "${INSTALL_GPU_DRIVER:-auto}" != "none" ]]; then
-  if grep -qi 'intel' <<<"$GPU"; then
+  # match on lspci vendor strings with word boundaries — NOT loose substrings
+  # (e.g. bare "ati" would match "compatible" and mis-detect a VMware GPU as AMD)
+  if grep -qiE 'intel corporation|\bintel\b' <<<"$GPU"; then
     info "Intel GPU: VA driver + GuC/HuC firmware loading"
     apt_install intel-media-va-driver
     if [[ ! -f /etc/modprobe.d/i915.conf ]]; then
       echo "options i915 enable_guc=3" > /etc/modprobe.d/i915.conf
       update-initramfs -u >/dev/null 2>&1 || warn "update-initramfs failed; run it manually"
     fi
-  elif grep -qiE 'amd|ati|radeon' <<<"$GPU"; then
+  elif grep -qiE 'advanced micro devices|amd/ati|\bradeon\b|\bamd\b' <<<"$GPU"; then
     info "AMD GPU: firmware + VA drivers"
     apt_install firmware-amd-graphics mesa-va-drivers
-  elif grep -qi 'nvidia' <<<"$GPU"; then
+  elif grep -qiE '\bnvidia\b' <<<"$GPU"; then
     if [[ "${INSTALL_GPU_DRIVER}" == "nvidia" ]]; then
       info "NVIDIA GPU: installing proprietary driver"
       apt_install nvidia-driver nvidia-settings
