@@ -1,32 +1,39 @@
-# Kali Linux for the Lenovo ThinkPad T490s
+# Kali Linux + Coding — laptop provisioning kit
 
-A repeatable, version-controlled setup for a fresh Kali install on a ThinkPad
-T490s (8th-gen Whiskey Lake i7, 16 GB RAM, 256 GB NVMe). You install stock Kali
-with **LUKS full-disk encryption**, then run one **idempotent provisioning
-script** that lays down all the extra software, hardening, ThinkPad tuning, and
-dotfiles.
+A repeatable, version-controlled setup for a fresh Kali install on **any UEFI
+laptop**. You install stock Kali with **LUKS full-disk encryption**, then run one
+**idempotent provisioning script** that lays down all the extra software (dev
+tooling, OSINT/offensive, anonymity), hardening, hardware tuning, and dotfiles.
 
 > **Approach:** official installer + post-install script (chosen deliberately
-> over a baked custom ISO — this is far easier to maintain, re-run, and tweak).
+> over a baked custom ISO — far easier to maintain, re-run, and tweak).
+>
+> **Hardware-agnostic:** module `60-hardware` auto-detects your CPU (Intel/AMD
+> microcode), GPU (Intel/AMD firmware; NVIDIA flagged), and laptop vendor
+> (battery charge thresholds applied only where the firmware supports them, e.g.
+> ThinkPads). No per-model editing — it adapts to the machine it runs on.
 
 📊 **Visual walkthrough of the scripting process:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 (diagrams render on GitHub) · 🔒 **Anonymity/OPSEC guide:** [docs/ANONYMITY.md](docs/ANONYMITY.md)
 
-## Hardware reality check (good news)
+## Hardware support
 
-The T490s is one of the best-supported laptops for Linux. Nothing here needs
-out-of-tree drivers:
+Modern laptops are well supported by Kali's kernel; the kit's job is **software
++ power tuning + hardening**, not driver hunting. What `60-hardware` does per
+component:
 
-| Component | Part | Linux status |
-|---|---|---|
-| CPU | i7-8565U / 8665U (Whiskey Lake) | native, add `intel-microcode` |
-| GPU | Intel UHD 620 | native (i915), GuC/HuC enabled in module 60 |
-| Wi-Fi | Intel 9560 (or 9260) | native (`iwlwifi`) |
-| Ethernet dock | Intel I219 | native |
-| Fingerprint | Synaptics/Validity | works via `libfprint` (module 60) — a few units vary |
-| Firmware/BIOS | — | updatable in-OS via `fwupd`/LVFS |
+| Component | Handling |
+|---|---|
+| CPU | `intel-microcode` **or** `amd64-microcode` by detected vendor; thermald on Intel |
+| GPU | Intel → i915 GuC/HuC + VA driver · AMD → `firmware-amd-graphics` · NVIDIA → flagged (opt in with `INSTALL_GPU_DRIVER=nvidia`) |
+| Wi-Fi | native (`iwlwifi`/`ath`/…); external monitor-mode adapter driver in module 37 |
+| Fingerprint | `libfprint`/`fprintd` (works across most vendors) |
+| Battery | charge thresholds via TLP **only where the firmware exposes them** |
+| Firmware/BIOS | `fwupd`/LVFS, in-OS |
 
-So the work is **software + power tuning + hardening**, not driver hunting.
+> **Reference build:** originally developed and VM-tested against a Lenovo
+> ThinkPad T490s (8th-gen Intel, Intel UHD 620, Intel 9560 Wi-Fi). It runs
+> unmodified on other laptops thanks to the detection above.
 
 ---
 
@@ -48,22 +55,20 @@ On this Windows box (or any machine):
    sudo dd if=kali-linux-*-installer-amd64.iso of=/dev/sdX bs=4M status=progress conv=fsync
    ```
 
-## Part 2 — T490s BIOS/UEFI settings
+## Part 2 — BIOS/UEFI settings
 
-Boot into BIOS (tap **Enter** at the ThinkPad logo → **F1**):
+Enter your firmware setup (usually **F1/F2/F10/Del** at the vendor logo; the key
+varies by maker). Names differ per vendor, but set the equivalents of:
 
-- **Security → Secure Boot → Disabled** (simplest for Kali; you can re-enable
-  with signed shim later if you care).
-- **Config → Thunderbolt(TM) 3 → set BIOS Assist / disable Thunderbolt boot** to
-  reduce DMA attack surface (optional).
-- **Security → Memory Protection → Execution Prevention → Enabled**.
-- **Security → Virtualization → Intel (R) Virtualization Technology → Enabled**
-  (and **VT-d → Enabled**) — required for the KVM/QEMU VM lab (module 15).
-- **Security → I/O Port Access** — disable radios/ports you never use (optional).
-- **Startup → UEFI/Legacy Boot → UEFI Only**.
-- Set a **supervisor password** and a **power-on/NVMe (drive) password** for
-  defense-in-depth alongside LUKS (optional but recommended).
-- Save (**F10**), boot from the USB (**F12** boot menu).
+- **Secure Boot → Disabled** (simplest for Kali; re-enable with a signed shim
+  later if you want it).
+- **CPU virtualization → Enabled** — Intel **VT-x**/**VT-d** or AMD **SVM/IOMMU**.
+  Required for the KVM/QEMU VM lab (module 15).
+- **Boot mode → UEFI only** (disable legacy/CSM).
+- **DMA/Thunderbolt protection → on** (reduce DMA attack surface) — optional.
+- Set a **supervisor/BIOS password** and, if offered, a **drive (HDD/NVMe)
+  password** for defense-in-depth alongside LUKS — optional but recommended.
+- Save and boot from the USB (a one-time boot menu is usually **F12/F9/Esc**).
 
 ## Part 3 — Install Kali with LUKS full-disk encryption
 
@@ -71,25 +76,26 @@ Run the **Graphical install**. Key screens:
 
 1. Hostname / user: create your normal non-root user (e.g. `anon`).
 2. **Partitioning → Guided – use entire disk and set up encrypted LVM.**
-   - Select the 256 GB NVMe.
+   - Select your internal disk (NVMe or SATA SSD).
    - "All files in one partition" is fine for a laptop.
    - Set a **strong LUKS passphrase** (this is your at-rest protection —
      make it long; you'll type it at every boot).
    - Let it erase/overwrite the disk if you have time (slower but cleaner).
 3. Software selection: keep the default desktop + **`kali-linux-default`**
    (the provision script will add/confirm this anyway).
-4. GRUB → install to the NVMe (`/dev/nvme0n1`).
+4. GRUB → install to your internal disk (e.g. `/dev/nvme0n1` or `/dev/sda`).
 5. Reboot, remove USB, unlock with your LUKS passphrase, log in.
 
-> After first login, note your disk device (usually `/dev/nvme0n1`, LUKS
-> partition `/dev/nvme0n1p3`) — referenced in the hardening notes.
+> After first login you can find your LUKS partition with
+> `lsblk -f | grep crypto_LUKS` — the provisioner detects it automatically for
+> the backup-key hint.
 
 ## Part 4 — Run the provisioning script
 
 Get this folder onto the laptop (USB, `git clone`, or `scp`), then:
 
 ```bash
-cd kali-t490s
+cd Kali-and-Coding
 chmod +x provision.sh
 sudo ./provision.sh            # runs every module in order
 ```
@@ -103,11 +109,11 @@ That's it. Reboot when it finishes (for docker group, kernel/i915, firmware).
 ./provision.sh --dry-run          # print the install plan, change nothing
 ./provision.sh doctor             # preflight checks (OS/arch/disk/network)
 sudo ./provision.sh 10 30         # only dev + osint
-sudo ./provision.sh 60            # only ThinkPad hardware tuning
+sudo ./provision.sh 60            # only hardware tuning (microcode/GPU/TLP)
 ```
 
 It's **idempotent** — re-run any time to pick up new tools or after edits.
-Every real run is **logged** to `/var/log/kali-t490s-<timestamp>.log`, and ends
+Every real run is **logged** to `/var/log/<KIT_NAME>-<timestamp>.log`, and ends
 with a **summary of any warnings** (e.g. packages that failed to install).
 `--dry-run` and `doctor`/`list` need no root; the full run runs a preflight
 first and aborts early if there's no network.
@@ -134,7 +140,7 @@ first and aborts early if there's no network.
 | `50-hardening` | ufw default-deny, ssh off + hardened, **MAC randomization**, sysctl hardening, fail2ban, cautious auto-updates |
 | `52-hwtoken` | **YubiKey**/FIDO2 tooling (ykman, pcscd, pam-u2f/yubico) — PAM left for you to wire (lockout-safe) |
 | `54-keys` | **ed25519 SSH key** bootstrap + hardened `~/.ssh/config`, keychain agent, GPG hardening (key creation left to you) |
-| `60-thinkpad` | intel-microcode, **fwupd**, **TLP** + charge thresholds, thermald, **fingerprint**, powertop, i915 GuC/HuC |
+| `60-hardware` | **auto-detected**: Intel/AMD microcode, GPU firmware/driver (Intel i915 · AMD · NVIDIA-flagged), **fwupd**, **TLP** + charge thresholds where supported, thermald, **fingerprint**, powertop, bluetooth |
 | `70-resilience` | **Timeshift** snapshots + **restic** encrypted backups, `snap-before-upgrade` + `backup-home` helper scripts |
 | `80-extras` | **Nerd Font** (prompt glyphs), **Flatpak/Flathub**, **Syncthing** (cloud-free vault/file sync across your own machines) |
 | `82-qol` | CLI: duf/dust/procs/sd/glow/fastfetch, **yazi**+nnn, navi+thefuck, **kitty**. Desktop (XFCE): **rofi** launcher, picom, **udiskie** automount, **gammastep** night light, Papirus+Arc themes, zathura/peek/xarchiver/gpick |
@@ -158,10 +164,12 @@ sudo apt install -y $(grep -vE '^\s*(#|$)' packages/extra-apt.txt)
 2. **Enroll fingerprint** (optional): `fprintd-enroll` then `sudo pam-auth-update`.
 3. **Firefox hardening**: copy `dotfiles/firefox-user.js` to your profile's
    `user.js` (path shown at `about:profiles`).
-4. **LUKS backup key** (so one forgotten passphrase ≠ dead disk):
+4. **LUKS backup key** (so one forgotten passphrase ≠ dead disk) — find your
+   encrypted partition first, then use it in place of `$LUKS` below:
    ```bash
-   sudo cryptsetup luksAddKey /dev/nvme0n1p3
-   sudo cryptsetup luksHeaderBackup /dev/nvme0n1p3 --header-backup-file luks-header.img
+   LUKS=$(lsblk -rno NAME,FSTYPE | awk '$2=="crypto_LUKS"{print "/dev/"$1}')
+   sudo cryptsetup luksAddKey "$LUKS"
+   sudo cryptsetup luksHeaderBackup "$LUKS" --header-backup-file luks-header.img
    ```
    Store that header image somewhere safe & offline.
 5. **Confirm the shell**: log out/in (or `exec zsh`) to load the new prompt.
@@ -182,5 +190,5 @@ nuclei -update-templates
   never aborts the run.
 - Auto-**install** of updates is intentionally **off** (module 50) because
   unattended full-upgrades can break tooling on a rolling distro.
-- Don't install both TLP and `power-profiles-daemon`; module 60 removes the
+- Do not install both TLP and `power-profiles-daemon`; module `60-hardware` removes the
   latter to avoid the conflict.

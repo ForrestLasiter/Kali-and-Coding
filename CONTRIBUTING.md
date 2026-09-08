@@ -1,7 +1,7 @@
 # Contributing
 
-Thanks for improving the kit. It targets **Kali Linux (amd64) on a ThinkPad
-T490s**, but most modules are hardware-agnostic.
+Thanks for improving the kit. It targets **Kali Linux on any UEFI laptop
+(amd64, arm64 best-effort)**; module 60-hardware auto-detects CPU/GPU/vendor.
 
 ## Ground rules
 

@@ -69,13 +69,15 @@ EOF
 sysctl --system >/dev/null 2>&1 || true
 
 # --- USBGuard (optional, informational) -------------------------------------
+# detect the LUKS partition so the note shows the real device, not a guess
+LUKSDEV="$(lsblk -rno NAME,FSTYPE 2>/dev/null | awk '$2=="crypto_LUKS"{print "/dev/"$1; exit}')"
 cat <<EOF
 ${_c_yellow}[!]${_c_reset} Optional: 'sudo apt install usbguard' to whitelist USB devices
     (blocks rogue USB while unlocked). Not enabled here to avoid locking out
     your own peripherals on first boot.
-${_c_yellow}[!]${_c_reset} LUKS: you set full-disk encryption at install. Consider adding a
-    detached-header or a second keyslot for a backup passphrase:
-      sudo cryptsetup luksAddKey /dev/nvme0n1p3
+${_c_yellow}[!]${_c_reset} LUKS: if you used full-disk encryption, consider a second keyslot for a
+    backup passphrase (find your LUKS partition with: lsblk -f | grep crypto_LUKS):
+      sudo cryptsetup luksAddKey ${LUKSDEV:-/dev/YOUR_LUKS_PARTITION}
 EOF
 
 ok "hardening module complete"

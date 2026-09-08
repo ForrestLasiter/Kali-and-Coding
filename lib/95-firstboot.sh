@@ -12,7 +12,7 @@ ask(){ printf "%s[?]%s %s [y/N] " "$y" "$z" "$1"; read -r a; [[ "$a" =~ ^[Yy] ]]
 say(){ printf "%s[*]%s %s\n" "$b" "$z" "$1"; }
 done_(){ printf "%s[+]%s %s\n" "$g" "$z" "$1"; }
 
-say "First-boot checklist for the T490s"
+say "First-boot checklist"
 echo
 
 if ask "Check & apply firmware updates (fwupd / LVFS)?"; then

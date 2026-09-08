@@ -9,11 +9,11 @@ Standalone visual page: [`docs/pipeline.html`](pipeline.html) — open it in a b
 
 ```mermaid
 flowchart TD
-    U["Flash installer USB<br/>(verify SHA256)"] --> BIOS["T490s BIOS:<br/>Secure Boot off · UEFI · VT-x on"]
+    U["Flash installer USB<br/>(verify SHA256)"] --> BIOS["BIOS:<br/>Secure Boot off · UEFI · VT-x on"]
     BIOS --> INST["Kali install →<br/>Guided encrypted LVM = LUKS FDE"]
-    INST --> CLONE["git clone kali-t490s"]
+    INST --> CLONE["git clone the repo"]
     CLONE --> PROV["sudo ./provision.sh"]
-    PROV --> MODS["15 modules run in order"]
+    PROV --> MODS["22 modules run in order"]
     MODS --> RB["reboot"]
     RB --> POST["fwupd firmware · enroll fingerprint<br/>Timeshift snapshot · DNS/IP leak tests"]
     POST --> DONE([Ready to use])
@@ -90,13 +90,18 @@ flowchart TD
       S2["25-anonymity<br/>Tor · dnscrypt · Mullvad · anti-forensics"]
       S3["30-osint<br/>amass · PD suite · spiderfoot"]
       S4["35-offensive<br/>seclists · netexec · bloodhound · ghidra · msf"]
+      S5["36-webapp<br/>ZAP · mitmproxy"]
+      S6["37-wireless<br/>rtl88xxau DKMS · aircrack · kismet"]
+      S7["38-pivoting<br/>chisel · ligolo-ng · sliver"]
     end
 
     subgraph SYS["System · Hardware · Hardening"]
       Y1["40-productivity<br/>Obsidian · KeePassXC · media"]
+      Y6["45-engagements<br/>pandoc/LaTeX · scaffold"]
       Y2["50-hardening<br/>ufw · MAC rand · sysctl"]
       Y3["52-hwtoken<br/>YubiKey / FIDO2"]
-      Y4["60-thinkpad<br/>TLP · fwupd · fingerprint · i915"]
+      Y7["54-keys<br/>ed25519 SSH · GPG hardening"]
+      Y4["60-hardware<br/>microcode · GPU · TLP · fwupd · fingerprint"]
       Y5["70-resilience<br/>Timeshift · restic"]
     end
 
@@ -104,11 +109,12 @@ flowchart TD
       F1["80-extras<br/>Nerd Font · Flatpak · Syncthing"]
       F2["82-qol<br/>yazi · kitty · rofi · themes"]
       F3["90-dotfiles<br/>zsh · tmux · git · starship · editor"]
+      F4["95-firstboot<br/>first-boot-checklist"]
     end
 
-    BASE --> D1 --> D2 --> D3 --> S1 --> S2 --> S3 --> S4
-    S4 --> Y1 --> Y2 --> Y3 --> Y4 --> Y5 --> F1 --> F2 --> F3
-    F3 --> READY([Reboot → ready])
+    BASE --> D1 --> D2 --> D3 --> S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7
+    S7 --> Y1 --> Y6 --> Y2 --> Y3 --> Y7 --> Y4 --> Y5 --> F1 --> F2 --> F3 --> F4
+    F4 --> READY([Reboot → ready])
 ```
 
 ---

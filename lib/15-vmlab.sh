@@ -13,8 +13,8 @@ apt_install \
 
 # check virtualization is actually available (Intel VT-x must be on in BIOS)
 if ! grep -qE 'vmx|svm' /proc/cpuinfo; then
-  warn "CPU virtualization flags not found — enable Intel VT-x in the T490s BIOS"
-  warn "(BIOS: Security -> Virtualization -> Intel VT / VT-d = Enabled)"
+  warn "CPU virtualization flags not found — enable CPU virtualization in your BIOS/UEFI"
+  warn "(look for Intel VT-x/VT-d or AMD SVM under Security/CPU)"
 fi
 
 systemctl enable --now libvirtd 2>/dev/null || warn "could not enable libvirtd"

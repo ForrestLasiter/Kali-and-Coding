@@ -117,7 +117,7 @@ GO_VERSION="1.23.4"
 if ! command -v go >/dev/null 2>&1 || ! go version 2>/dev/null | grep -q "$GO_VERSION"; then
   info "installing Go $GO_VERSION"
   tmp="$(mktemp -d)"
-  if curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -o "$tmp/go.tgz"; then
+  if curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-${GOARCH}.tar.gz" -o "$tmp/go.tgz"; then
     rm -rf /usr/local/go && tar -C /usr/local -xzf "$tmp/go.tgz"
     ln -sf /usr/local/go/bin/go /usr/local/bin/go
     ln -sf /usr/local/go/bin/gofmt /usr/local/bin/gofmt

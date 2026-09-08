@@ -11,6 +11,15 @@ case ":$PATH:" in
 esac
 export PATH="$PATH:/usr/local/go/bin"
 
+# Architecture, so download URLs adapt to amd64 / arm64 laptops.
+ARCH="$(dpkg --print-architecture 2>/dev/null || echo amd64)"
+case "$ARCH" in
+  amd64) GOARCH=amd64; RUST_ARCH=x86_64  ;;
+  arm64) GOARCH=arm64; RUST_ARCH=aarch64 ;;
+  *)     GOARCH=amd64; RUST_ARCH=x86_64  ;;
+esac
+export ARCH GOARCH RUST_ARCH
+
 # --- pretty output ----------------------------------------------------------
 _c_reset=$'\033[0m'; _c_blue=$'\033[1;34m'; _c_yellow=$'\033[1;33m'
 _c_red=$'\033[1;31m'; _c_green=$'\033[1;32m'

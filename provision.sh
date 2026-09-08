@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# provision.sh — Post-install provisioning for Kali Linux on a Lenovo ThinkPad T490s
+# provision.sh — Post-install provisioning for Kali Linux on a laptop (any UEFI machine)
 #
 # Run this AFTER a fresh Kali install (see README.md for the install walkthrough).
 # It is idempotent: safe to re-run, and you can run individual modules.
@@ -14,7 +14,7 @@
 #   ./provision.sh --dry-run            # print the install plan, change nothing
 #   RUN_USER=anon sudo ./provision.sh   # override the target (non-root) user
 #
-# Every run is logged to /var/log/kali-t490s-<timestamp>.log (override: LOGFILE=...).
+# Every run is logged to /var/log/<KIT_NAME>-<timestamp>.log (override: LOGFILE=...).
 #
 set -euo pipefail
 
@@ -23,6 +23,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="$SCRIPT_DIR/lib"
 export SCRIPT_DIR LIB_DIR
 export DEBIAN_FRONTEND=noninteractive
+
+# tunables (KIT_NAME, battery thresholds, GPU policy) — defaults in config.sh
+# shellcheck source=config.sh
+[[ -f "$SCRIPT_DIR/config.sh" ]] && source "$SCRIPT_DIR/config.sh"
+: "${KIT_NAME:=kali-setup}"
+export KIT_NAME BAT_START BAT_STOP INSTALL_GPU_DRIVER
 
 # --- parse flags (separate from module selectors) ---------------------------
 DRY_RUN=0
@@ -56,7 +62,7 @@ MODULES=(
   "50-hardening"
   "52-hwtoken"
   "54-keys"
-  "60-thinkpad"
+  "60-hardware"
   "70-resilience"
   "80-extras"
   "82-qol"
@@ -98,7 +104,7 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
     printf '%s\n' "$joined" \
       | grep -E '(^|[[:space:]])apt_install[[:space:]]' \
       | grep -vE 'apt_install_file' \
-      | sed -E 's/.*apt_install[[:space:]]+//; s/[[:space:]]*\|\|.*//; s/#.*//' \
+      | sed -E 's/.*apt_install[[:space:]]+//; s/[[:space:]]*\|\|.*//; s/[[:space:]]*;;.*//; s/#.*//' \
       | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//; s/[[:space:]]+/ /g' \
       | sed '/^$/d; s/^/  apt: /' || true
     # third-party repos + .debs + language installers (|| true: no match is fine)
@@ -129,7 +135,7 @@ RUN_HOME="$(getent passwd "$RUN_USER" | cut -d: -f6)"
 export RUN_USER RUN_HOME
 
 # tee all output to a timestamped logfile
-LOGFILE="${LOGFILE:-/var/log/kali-t490s-$(date +%Y%m%d-%H%M%S).log}"
+LOGFILE="${LOGFILE:-/var/log/${KIT_NAME}-$(date +%Y%m%d-%H%M%S).log}"
 exec > >(tee -a "$LOGFILE") 2>&1
 
 # shellcheck source=lib/common.sh
@@ -144,7 +150,10 @@ preflight() {
     warn "OS is not Kali (some Kali-specific packages may be missing)"; fi
   # arch
   local arch; arch="$(dpkg --print-architecture 2>/dev/null || echo unknown)"
-  if [[ "$arch" == "amd64" ]]; then ok "arch: amd64"; else warn "arch is '$arch' (kit targets amd64)"; fi
+  case "$arch" in
+    amd64|arm64) ok "arch: $arch" ;;
+    *) warn "arch '$arch' is untested (kit targets amd64, with arm64 best-effort)" ;;
+  esac
   # disk
   local avail; avail="$(df --output=avail -BG / 2>/dev/null | tail -1 | tr -dc '0-9')"
   if [[ -n "$avail" && "$avail" -ge 15 ]]; then ok "disk: ${avail}G free on /"; else

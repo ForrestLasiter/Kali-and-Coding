@@ -1,4 +1,4 @@
-<title>Kali T490s Provisioning</title>
+<title>Kali + Coding Provisioning</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
@@ -141,27 +141,27 @@
 
 <div class="wrap">
 
-  <div class="eyebrow">kali-t490s</div>
+  <div class="eyebrow">Kali-and-Coding</div>
 
   <div class="term" role="img" aria-label="Kali terminal running sudo ./provision.sh">
     <div class="term__bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-      <span class="term__title">anon@kali: ~/kali-t490s</span>
+      <span class="term__title">anon@kali: ~/Kali-and-Coding</span>
     </div>
     <div class="term__body">
-<span class="p-path">┌──(</span><span class="p-user">anon</span><span class="p-mark">㉿</span><span class="p-user">kali</span><span class="p-path">)-[</span>~/kali-t490s<span class="p-path">]</span>
+<span class="p-path">┌──(</span><span class="p-user">anon</span><span class="p-mark">㉿</span><span class="p-user">kali</span><span class="p-path">)-[</span>~/Kali-and-Coding<span class="p-path">]</span>
 <span class="p-path">└─</span><span class="p-cmd">$ <span class="kw">sudo</span> ./provision.sh</span> <span class="cursor" aria-hidden="true"></span>
-<span class="comment"># one idempotent script → 16 modules → a ready ThinkPad</span>
+<span class="comment"># one idempotent script → 22 modules → a ready laptop</span>
     </div>
   </div>
 
   <h1>Provisioning, start to finish</h1>
-  <p class="lede">How a fresh, LUKS-encrypted Kali install on a ThinkPad T490s
+  <p class="lede">How a fresh, LUKS-encrypted Kali install on any UEFI laptop
   becomes a fully-loaded dev / OSINT / privacy workstation — one command,
   sourced modules, shared helpers. Visual map of the scripting process.</p>
 
   <div class="meta">
-    <div class="chip"><b>16</b><span>modules</span></div>
+    <div class="chip"><b>22</b><span>modules</span></div>
     <div class="chip"><b>~1,600</b><span>lines of bash</span></div>
     <div class="chip"><b>5</b><span>helper commands</span></div>
     <div class="chip"><b>LUKS</b><span>full-disk encryption</span></div>
@@ -177,7 +177,7 @@
 
     <div class="figwrap">
       <figure>
-        <svg viewBox="0 0 980 210" role="img" aria-label="Flow: provision.sh asserts root, resolves the target user, sources common.sh helpers, sources 16 modules in order, then prints reboot advice.">
+        <svg viewBox="0 0 980 210" role="img" aria-label="Flow: provision.sh asserts root, resolves the target user, sources common.sh helpers, sources 22 modules in order, then prints reboot advice.">
           <defs>
             <marker id="arw" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
@@ -221,7 +221,7 @@
             <g stroke="var(--violet)" stroke-width="1.6" fill="none">
               <path d="M665 86 C665 44 741 44 741 86" marker-end="url(#arw)"/>
             </g>
-            <text x="703" y="38" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--violet)">× 16 in order</text>
+            <text x="703" y="38" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--violet)">× 22 in order</text>
             <!-- arrow labels -->
             <g font-size="10.5" fill="var(--faint)" text-anchor="middle">
               <text x="196" y="107">as root</text>
@@ -286,6 +286,9 @@
         <div class="row"><div class="node">25</div><div class="rc"><h3>anonymity</h3><p>Tor · dnscrypt · Mullvad · anti-forensics · kill-switch</p></div></div>
         <div class="row"><div class="node">30</div><div class="rc"><h3>osint</h3><p>amass · ProjectDiscovery suite · spiderfoot · maltego</p></div></div>
         <div class="row"><div class="node">35</div><div class="rc"><h3>offensive</h3><p>seclists · netexec · bloodhound · ghidra · metasploit</p></div></div>
+        <div class="row"><div class="node">36</div><div class="rc"><h3>webapp</h3><p>OWASP ZAP · mitmproxy · wapiti · commix</p></div></div>
+        <div class="row"><div class="node">37</div><div class="rc"><h3>wireless</h3><p>rtl88xxau DKMS · aircrack-ng · kismet · bettercap</p></div></div>
+        <div class="row"><div class="node">38</div><div class="rc"><h3>pivoting</h3><p>chisel · ligolo-ng · sliver <em>(authorized use)</em></p></div></div>
       </div>
     </div>
 
@@ -294,9 +297,11 @@
       <div class="phase__label"><span class="pd"></span>System · Hardware · Hardening</div>
       <div class="rows">
         <div class="row"><div class="node">40</div><div class="rc"><h3>productivity</h3><p>Obsidian · KeePassXC · media · office</p></div></div>
+        <div class="row"><div class="node">45</div><div class="rc"><h3>engagements</h3><p>pandoc + LaTeX reports · ~/engagements scaffold</p></div></div>
         <div class="row"><div class="node">50</div><div class="rc"><h3>hardening</h3><p>ufw · MAC randomization · sysctl hardening</p></div></div>
         <div class="row"><div class="node">52</div><div class="rc"><h3>hwtoken</h3><p>YubiKey / FIDO2 tooling (PAM left manual)</p></div></div>
-        <div class="row"><div class="node">60</div><div class="rc"><h3>thinkpad</h3><p>TLP · fwupd · fingerprint · thermald · i915</p></div></div>
+        <div class="row"><div class="node">54</div><div class="rc"><h3>keys</h3><p>ed25519 SSH key · hardened ssh/gpg · keychain</p></div></div>
+        <div class="row"><div class="node">60</div><div class="rc"><h3>hardware</h3><p>microcode · GPU · TLP · fwupd · fingerprint (auto-detected)</p></div></div>
         <div class="row"><div class="node">70</div><div class="rc"><h3>resilience</h3><p>Timeshift snapshots · restic encrypted backups</p></div></div>
       </div>
     </div>
@@ -308,6 +313,7 @@
         <div class="row"><div class="node">80</div><div class="rc"><h3>extras</h3><p>Nerd Font · Flatpak/Flathub · Syncthing</p></div></div>
         <div class="row"><div class="node">82</div><div class="rc"><h3>qol</h3><p>yazi · kitty · rofi · night light · themes</p></div></div>
         <div class="row"><div class="node">90</div><div class="rc"><h3>dotfiles</h3><p>zsh · tmux · git · starship · editor settings</p></div></div>
+        <div class="row"><div class="node">95</div><div class="rc"><h3>firstboot</h3><p>installs the interactive first-boot-checklist</p></div></div>
       </div>
     </div>
 
@@ -336,6 +342,6 @@
     </div>
   </section>
 
-  <footer>kali-t490s · installer + LUKS-FDE + post-install provisioning · docs/ARCHITECTURE.md</footer>
+  <footer>Kali-and-Coding · installer + LUKS-FDE + post-install provisioning · docs/ARCHITECTURE.md</footer>
 
 </div>

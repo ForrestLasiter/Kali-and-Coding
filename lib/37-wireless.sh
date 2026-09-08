@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # 37-wireless.sh — wireless auditing + the DKMS driver for common external
-# adapters. The T490s internal Intel 9560 can't do injection/monitor mode, so
-# this shines with an Alfa AWUS036ACM (MT7612U) or RTL8812AU-based adapter.
+# adapters. Most laptops' internal Intel/Realtek wifi can't do injection/monitor
+# mode well, so this shines with an external adapter — an Alfa AWUS036ACM
+# (MT7612U, no driver needed) or an RTL8812AU-based stick (uses the DKMS driver).
 #
 # Only test networks you own or are authorized to assess.
 

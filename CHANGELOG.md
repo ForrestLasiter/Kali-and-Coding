@@ -4,6 +4,15 @@ All notable changes to this kit. Format loosely follows Keep a Changelog.
 
 ## [Unreleased]
 
+### Changed
+- **Generalized for any UEFI laptop.** `60-thinkpad` → `60-hardware`, which
+  auto-detects CPU vendor (Intel/AMD microcode), GPU (Intel/AMD firmware; NVIDIA
+  flagged, opt-in via `INSTALL_GPU_DRIVER=nvidia`), and applies battery charge
+  thresholds only where the firmware supports them. Added `config.sh` for
+  tunables (`KIT_NAME`, `BAT_START/STOP`, `INSTALL_GPU_DRIVER`); download URLs
+  and the logfile name are now arch-/name-aware. README, BIOS steps, and LUKS
+  hints no longer assume a specific model. T490s is now just the reference build.
+
 ### Added
 - `--dry-run` (static install plan, changes nothing), `doctor` preflight
   (OS / arch / disk / network), timestamped run logging, and a post-run

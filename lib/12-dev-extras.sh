@@ -59,7 +59,7 @@ dpkg -s bruno >/dev/null 2>&1 || \
 info "shell QoL (zoxide, atuin, tealdeer)"
 apt_install zoxide tealdeer
 # atuin: magic searchable/syncable shell history (prebuilt binary, no compile)
-install_gh_release_bin atuin atuinsh/atuin 'atuin-x86_64-unknown-linux-gnu\.tar\.gz$' atuin
+install_gh_release_bin atuin atuinsh/atuin "atuin-${RUST_ARCH}-unknown-linux-gnu\.tar\.gz$" atuin
 as_user 'command -v tldr >/dev/null 2>&1 && tldr --update >/dev/null 2>&1 || true'
 
 # =============================================================================

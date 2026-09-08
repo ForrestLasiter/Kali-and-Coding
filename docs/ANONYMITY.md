@@ -1,4 +1,4 @@
-# Anonymity & OPSEC guide — Kali T490s
+# Anonymity & OPSEC guide
 
 Read this before trusting anything in module `25-anonymity`. Tools reduce
 leaks; they do **not** make an identified machine anonymous.
@@ -47,7 +47,7 @@ this is that model, running locally.
 1. Download the Tails USB image + verify (they provide a browser-extension /
    GPG verification flow).
 2. Flash to a dedicated USB (`dd` or the Tails installer).
-3. Boot the T490s from it (F12). Optionally set a persistent-storage volume
+3. Boot the laptop from it (one-time boot menu). Optionally set a persistent-storage volume
    (LUKS-encrypted) only if you truly need persistence — pure amnesic is safer.
 
 ## What the module changed on THIS box (and how to revert)
