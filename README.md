@@ -69,7 +69,7 @@ Boot into BIOS (tap **Enter** at the ThinkPad logo → **F1**):
 
 Run the **Graphical install**. Key screens:
 
-1. Hostname / user: create your normal non-root user (e.g. `forrest`).
+1. Hostname / user: create your normal non-root user (e.g. `anon`).
 2. **Partitioning → Guided – use entire disk and set up encrypted LVM.**
    - Select the 256 GB NVMe.
    - "All files in one partition" is fine for a laptop.

@@ -1,0 +1,341 @@
+<title>Kali T490s Provisioning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --bg:#f3f6fc; --surface:#ffffff; --surface-2:#eaeff8; --border:#d3dcef;
+    --text:#0e1626; --muted:#54617c; --faint:#7c88a1;
+    --accent:#1f6feb; --violet:#6a52e6; --ok:#1a7f37; --warn:#9a6700; --danger:#cf222e;
+    --rail:#c3cee4;
+    --ph-foundation:#64748b; --ph-dev:#1f6feb; --ph-sec:#6a52e6;
+    --ph-sys:#1a7f37; --ph-fin:#9a6700;
+    --shadow:0 1px 2px rgba(16,22,38,.06),0 8px 24px rgba(16,22,38,.06);
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0a0e17; --surface:#111826; --surface-2:#161f30; --border:#26314a;
+      --text:#e7ecf7; --muted:#9dabc4; --faint:#6f7d99;
+      --accent:#4d90ff; --violet:#9a8bff; --ok:#3fb950; --warn:#d9a441; --danger:#ff6a63;
+      --rail:#2b3853;
+      --ph-foundation:#8595ad; --ph-dev:#4d90ff; --ph-sec:#9a8bff;
+      --ph-sys:#3fb950; --ph-fin:#d9a441;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0a0e17; --surface:#111826; --surface-2:#161f30; --border:#26314a;
+    --text:#e7ecf7; --muted:#9dabc4; --faint:#6f7d99;
+    --accent:#4d90ff; --violet:#9a8bff; --ok:#3fb950; --warn:#d9a441; --danger:#ff6a63;
+    --rail:#2b3853;
+    --ph-foundation:#8595ad; --ph-dev:#4d90ff; --ph-sec:#9a8bff;
+    --ph-sys:#3fb950; --ph-fin:#d9a441;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,56px) clamp(16px,4vw,40px)}
+  a{color:var(--accent)}
+  h1,h2,h3{text-wrap:balance;margin:0}
+  .mono{font-family:var(--mono)}
+
+  /* ---------- hero terminal ---------- */
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);font-weight:500}
+  .term{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    box-shadow:var(--shadow);overflow:hidden;margin-top:14px}
+  .term__bar{display:flex;align-items:center;gap:8px;padding:11px 14px;
+    background:var(--surface-2);border-bottom:1px solid var(--border)}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+  .term__title{margin-left:8px;font-family:var(--mono);font-size:12.5px;color:var(--faint)}
+  .term__body{padding:20px clamp(16px,3vw,26px) 24px;font-family:var(--mono);
+    font-size:clamp(13px,1.7vw,15px);overflow-x:auto}
+  .p-path{color:var(--faint)}
+  .p-user{color:var(--ok)}
+  .p-mark{color:var(--violet)}
+  .p-cmd{color:var(--text);font-weight:500}
+  .p-cmd .kw{color:var(--accent)}
+  .cursor{display:inline-block;width:9px;height:1.05em;translate:0 2px;
+    background:var(--accent);animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .comment{color:var(--faint)}
+  h1{font-size:clamp(26px,4.4vw,40px);font-weight:700;letter-spacing:-.02em;margin:26px 0 8px}
+  .lede{color:var(--muted);font-size:clamp(15px,2vw,17px);max-width:64ch}
+
+  /* ---------- meta strip ---------- */
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .chip{display:flex;align-items:baseline;gap:8px;background:var(--surface);
+    border:1px solid var(--border);border-radius:9px;padding:9px 14px}
+  .chip b{font-family:var(--mono);font-size:16px;font-weight:700}
+  .chip span{font-size:12.5px;color:var(--muted)}
+
+  /* ---------- sections ---------- */
+  section{margin-top:clamp(38px,6vw,64px)}
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .sec-head h2{font-size:clamp(19px,2.6vw,24px);font-weight:600;letter-spacing:-.01em}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:500}
+  .sec-sub{color:var(--muted);font-size:14.5px;max-width:66ch;margin:0 0 22px}
+
+  /* ---------- exec flow (svg) ---------- */
+  .figwrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    box-shadow:var(--shadow);padding:clamp(14px,2.4vw,24px);overflow-x:auto}
+  figure{margin:0}
+  figcaption{color:var(--faint);font-size:12.5px;margin-top:12px;font-family:var(--mono)}
+  svg{display:block;max-width:100%;height:auto}
+
+  /* ---------- helper cards ---------- */
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:16px 18px}
+  .card h3{font-family:var(--mono);font-size:14px;font-weight:700;margin-bottom:5px}
+  .card p{margin:0;color:var(--muted);font-size:13.5px}
+  .card .tag{font-family:var(--mono);font-size:11px;color:var(--accent)}
+
+  /* ---------- pipeline rail ---------- */
+  .phase{margin-top:26px}
+  .phase:first-child{margin-top:0}
+  .phase__label{display:flex;align-items:center;gap:9px;font-family:var(--mono);
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;
+    color:var(--phc,var(--muted));margin-bottom:10px}
+  .phase__label .pd{width:9px;height:9px;border-radius:50%;background:var(--phc,var(--muted))}
+  .rows{position:relative}
+  .row{position:relative;display:grid;grid-template-columns:46px 1fr;gap:16px;
+    padding:9px 0;align-items:center}
+  /* the continuous rail */
+  .row::before{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;
+    background:var(--rail)}
+  .phase:last-child .rows .row:last-child::before{bottom:50%}
+  .node{position:relative;z-index:1;width:46px;height:46px;border-radius:10px;
+    display:grid;place-items:center;font-family:var(--mono);font-weight:700;
+    font-size:14px;background:var(--surface);color:var(--phc,var(--accent));
+    border:2px solid var(--phc,var(--accent));box-shadow:var(--shadow)}
+  .rc{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    padding:11px 15px}
+  .rc h3{font-family:var(--mono);font-size:14.5px;font-weight:600;margin-bottom:2px}
+  .rc p{margin:0;color:var(--muted);font-size:13px;font-family:var(--mono)}
+
+  .endcap{display:grid;grid-template-columns:46px 1fr;gap:16px;align-items:center;margin-top:2px}
+  .endcap .node{border-style:solid;background:var(--ok);color:#fff;border-color:var(--ok)}
+  .endcap .rc{border-color:var(--ok)}
+
+  /* ---------- ref table ---------- */
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  .tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);
+    border-radius:11px;box-shadow:var(--shadow)}
+  th,td{text-align:left;padding:11px 15px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);
+    font-weight:600;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  td .mono{font-size:12.5px;color:var(--accent)}
+  td code{font-family:var(--mono);font-size:12.5px;background:var(--surface-2);
+    padding:1px 6px;border-radius:5px}
+
+  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--border);
+    color:var(--faint);font-size:13px;font-family:var(--mono)}
+  @media (prefers-reduced-motion:reduce){.cursor{animation:none}}
+</style>
+
+<div class="wrap">
+
+  <div class="eyebrow">kali-t490s</div>
+
+  <div class="term" role="img" aria-label="Kali terminal running sudo ./provision.sh">
+    <div class="term__bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="term__title">anon@kali: ~/kali-t490s</span>
+    </div>
+    <div class="term__body">
+<span class="p-path">┌──(</span><span class="p-user">anon</span><span class="p-mark">㉿</span><span class="p-user">kali</span><span class="p-path">)-[</span>~/kali-t490s<span class="p-path">]</span>
+<span class="p-path">└─</span><span class="p-cmd">$ <span class="kw">sudo</span> ./provision.sh</span> <span class="cursor" aria-hidden="true"></span>
+<span class="comment"># one idempotent script → 16 modules → a ready ThinkPad</span>
+    </div>
+  </div>
+
+  <h1>Provisioning, start to finish</h1>
+  <p class="lede">How a fresh, LUKS-encrypted Kali install on a ThinkPad T490s
+  becomes a fully-loaded dev / OSINT / privacy workstation — one command,
+  sourced modules, shared helpers. Visual map of the scripting process.</p>
+
+  <div class="meta">
+    <div class="chip"><b>16</b><span>modules</span></div>
+    <div class="chip"><b>~1,600</b><span>lines of bash</span></div>
+    <div class="chip"><b>5</b><span>helper commands</span></div>
+    <div class="chip"><b>LUKS</b><span>full-disk encryption</span></div>
+    <div class="chip"><b>0</b><span>AI / telemetry</span></div>
+  </div>
+
+  <!-- ============ EXECUTION MODEL ============ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>What the one command does</h2></div>
+    <p class="sec-sub">The orchestrator stays tiny. It never installs anything itself —
+    it wires up shared helpers, then <em>sources</em> each module in order so they
+    all share the same functions and environment.</p>
+
+    <div class="figwrap">
+      <figure>
+        <svg viewBox="0 0 980 210" role="img" aria-label="Flow: provision.sh asserts root, resolves the target user, sources common.sh helpers, sources 16 modules in order, then prints reboot advice.">
+          <defs>
+            <marker id="arw" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <g font-family="JetBrains Mono, monospace" fill="currentColor">
+            <!-- boxes -->
+            <g>
+              <rect x="8" y="86" width="170" height="60" rx="9" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="2"/>
+              <text x="93" y="111" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">sudo ./provision.sh</text>
+              <text x="93" y="130" text-anchor="middle" font-size="11" fill="var(--muted)">entry point</text>
+            </g>
+            <g>
+              <rect x="218" y="86" width="160" height="60" rx="9" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+              <text x="298" y="110" text-anchor="middle" font-size="12.5" font-weight="600">assert root</text>
+              <text x="298" y="129" text-anchor="middle" font-size="11" fill="var(--muted)">resolve RUN_USER</text>
+            </g>
+            <g>
+              <rect x="418" y="86" width="160" height="60" rx="9" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
+              <text x="498" y="110" text-anchor="middle" font-size="12.5" font-weight="600">source common.sh</text>
+              <text x="498" y="129" text-anchor="middle" font-size="11" fill="var(--muted)">helpers ready</text>
+            </g>
+            <g>
+              <rect x="618" y="86" width="170" height="60" rx="9" fill="var(--surface-2)" stroke="var(--violet)" stroke-width="2"/>
+              <text x="703" y="110" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--violet)">run modules</text>
+              <text x="703" y="129" text-anchor="middle" font-size="11" fill="var(--muted)">source lib/NN-*.sh</text>
+            </g>
+            <g>
+              <rect x="828" y="86" width="144" height="60" rx="9" fill="var(--surface)" stroke="var(--ok)" stroke-width="2"/>
+              <text x="900" y="110" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--ok)">reboot</text>
+              <text x="900" y="129" text-anchor="middle" font-size="11" fill="var(--muted)">next-steps</text>
+            </g>
+            <!-- arrows -->
+            <g stroke="currentColor" stroke-width="1.6" fill="none">
+              <line x1="178" y1="116" x2="214" y2="116" marker-end="url(#arw)"/>
+              <line x1="378" y1="116" x2="414" y2="116" marker-end="url(#arw)"/>
+              <line x1="578" y1="116" x2="614" y2="116" marker-end="url(#arw)"/>
+              <line x1="788" y1="116" x2="824" y2="116" marker-end="url(#arw)"/>
+            </g>
+            <!-- loop arc over 'run modules' -->
+            <g stroke="var(--violet)" stroke-width="1.6" fill="none">
+              <path d="M665 86 C665 44 741 44 741 86" marker-end="url(#arw)"/>
+            </g>
+            <text x="703" y="38" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--violet)">× 16 in order</text>
+            <!-- arrow labels -->
+            <g font-size="10.5" fill="var(--faint)" text-anchor="middle">
+              <text x="196" y="107">as root</text>
+              <text x="396" y="107">SUDO_USER</text>
+              <text x="596" y="107">source</text>
+              <text x="806" y="107">done</text>
+            </g>
+          </g>
+        </svg>
+        <figcaption>provision.sh — control only; every install call lives inside a module.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ HELPERS ============ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>The shared helpers in common.sh</h2></div>
+    <p class="sec-sub">Modules stay short because the machinery lives here. One of these
+    matters most: <span class="mono">as_user</span> is why per-user tools land in
+    <span class="mono">your</span> home, owned by you — not root.</p>
+    <div class="grid2">
+      <div class="card"><span class="tag">idempotent</span>
+        <h3>apt_install</h3><p>Skips already-installed packages; a missing or renamed one warns and the run continues.</p></div>
+      <div class="card"><span class="tag">keyring</span>
+        <h3>add_apt_repo</h3><p>Fetches a key to a signed-by keyring and writes the source list the modern, correct way.</p></div>
+      <div class="card"><span class="tag">.deb</span>
+        <h3>install_deb</h3><p>Downloads a vendor .deb to a temp dir and installs it (Obsidian, Bruno, DBeaver…).</p></div>
+      <div class="card"><span class="tag">drop privileges</span>
+        <h3>as_user</h3><p>Runs a command as RUN_USER — oh-my-zsh, VSCodium extensions, nvm, uv, bun, Rust, go tools.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ PIPELINE ============ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>The module pipeline</h2></div>
+    <p class="sec-sub">Sixteen modules, numbered by run order — and the order carries meaning:
+    dev tooling installs Go and Rust before the OSINT and QoL stages that compile tools with them.</p>
+
+    <!-- Foundation -->
+    <div class="phase" style="--phc:var(--ph-foundation)">
+      <div class="phase__label"><span class="pd"></span>Foundation</div>
+      <div class="rows">
+        <div class="row"><div class="node">00</div><div class="rc"><h3>base</h3><p>full-upgrade · core CLI · Kali metapackages</p></div></div>
+      </div>
+    </div>
+
+    <!-- Development -->
+    <div class="phase" style="--phc:var(--ph-dev)">
+      <div class="phase__label"><span class="pd"></span>Development</div>
+      <div class="rows">
+        <div class="row"><div class="node">10</div><div class="rc"><h3>dev</h3><p>zsh · VSCodium · Docker · Go · Node · Rust · gh</p></div></div>
+        <div class="row"><div class="node">12</div><div class="rc"><h3>dev-extras</h3><p>uv · pnpm/bun · lazygit · DB + API clients · shell QoL</p></div></div>
+        <div class="row"><div class="node">15</div><div class="rc"><h3>vmlab</h3><p>KVM · virt-manager · whonix-import helper</p></div></div>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div class="phase" style="--phc:var(--ph-sec)">
+      <div class="phase__label"><span class="pd"></span>Security · Privacy · Offense</div>
+      <div class="rows">
+        <div class="row"><div class="node">20</div><div class="rc"><h3>browsers-comms</h3><p>Brave · Signal · Element · WireGuard · ProtonVPN</p></div></div>
+        <div class="row"><div class="node">25</div><div class="rc"><h3>anonymity</h3><p>Tor · dnscrypt · Mullvad · anti-forensics · kill-switch</p></div></div>
+        <div class="row"><div class="node">30</div><div class="rc"><h3>osint</h3><p>amass · ProjectDiscovery suite · spiderfoot · maltego</p></div></div>
+        <div class="row"><div class="node">35</div><div class="rc"><h3>offensive</h3><p>seclists · netexec · bloodhound · ghidra · metasploit</p></div></div>
+      </div>
+    </div>
+
+    <!-- System -->
+    <div class="phase" style="--phc:var(--ph-sys)">
+      <div class="phase__label"><span class="pd"></span>System · Hardware · Hardening</div>
+      <div class="rows">
+        <div class="row"><div class="node">40</div><div class="rc"><h3>productivity</h3><p>Obsidian · KeePassXC · media · office</p></div></div>
+        <div class="row"><div class="node">50</div><div class="rc"><h3>hardening</h3><p>ufw · MAC randomization · sysctl hardening</p></div></div>
+        <div class="row"><div class="node">52</div><div class="rc"><h3>hwtoken</h3><p>YubiKey / FIDO2 tooling (PAM left manual)</p></div></div>
+        <div class="row"><div class="node">60</div><div class="rc"><h3>thinkpad</h3><p>TLP · fwupd · fingerprint · thermald · i915</p></div></div>
+        <div class="row"><div class="node">70</div><div class="rc"><h3>resilience</h3><p>Timeshift snapshots · restic encrypted backups</p></div></div>
+      </div>
+    </div>
+
+    <!-- Extras -->
+    <div class="phase" style="--phc:var(--ph-fin)">
+      <div class="phase__label"><span class="pd"></span>Extras · Config</div>
+      <div class="rows">
+        <div class="row"><div class="node">80</div><div class="rc"><h3>extras</h3><p>Nerd Font · Flatpak/Flathub · Syncthing</p></div></div>
+        <div class="row"><div class="node">82</div><div class="rc"><h3>qol</h3><p>yazi · kitty · rofi · night light · themes</p></div></div>
+        <div class="row"><div class="node">90</div><div class="rc"><h3>dotfiles</h3><p>zsh · tmux · git · starship · editor settings</p></div></div>
+      </div>
+    </div>
+
+    <div class="endcap">
+      <div class="node">✓</div>
+      <div class="rc"><h3>reboot → ready</h3><p>fwupd · fingerprint · Timeshift snapshot · leak tests</p></div>
+    </div>
+  </section>
+
+  <!-- ============ WHERE THINGS LAND ============ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Where everything lands</h2></div>
+    <p class="sec-sub">Four install paths, each owned by the right user, so nothing you use daily is stuck behind root.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Layer</th><th>Produced by</th><th>Location</th></tr></thead>
+        <tbody>
+          <tr><td>System packages</td><td><span class="mono">apt_install</span></td><td><code>/usr</code> via apt</td></tr>
+          <tr><td>Third-party apps</td><td><span class="mono">add_apt_repo</span> · <span class="mono">install_deb</span></td><td>vendor repos / dpkg</td></tr>
+          <tr><td>Per-user tools</td><td><span class="mono">as_user</span></td><td><code>~/.local</code> · <code>~/go/bin</code> · <code>~/.bun</code> · <code>~/.cargo</code></td></tr>
+          <tr><td>Dotfiles</td><td><span class="mono">90-dotfiles</span></td><td><code>~/.zshrc</code> · <code>~/.config/*</code> (backs up first)</td></tr>
+          <tr><td>Helper commands</td><td>heredocs in modules</td><td><code>/usr/local/bin</code> — vpn-killswitch, wipe-traces, whonix-import, snap-before-upgrade, backup-home</td></tr>
+          <tr><td>System config</td><td>modules 25 / 50 / 60 / 70</td><td><code>/etc/sysctl.d</code> · <code>/etc/NetworkManager</code> · <code>/etc/tlp.d</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>kali-t490s · installer + LUKS-FDE + post-install provisioning · docs/ARCHITECTURE.md</footer>
+
+</div>

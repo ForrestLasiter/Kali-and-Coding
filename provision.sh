@@ -10,7 +10,7 @@
 #   sudo ./provision.sh all          # same as above
 #   sudo ./provision.sh 10 30        # run only modules 10-dev and 30-osint
 #   sudo ./provision.sh list         # list available modules
-#   RUN_USER=forrest sudo ./provision.sh   # override the target (non-root) user
+#   RUN_USER=anon sudo ./provision.sh      # override the target (non-root) user
 #
 set -euo pipefail
 

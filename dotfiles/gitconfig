@@ -1,6 +1,8 @@
 [user]
-	name = Forrest Lasiter
-	email = forrest.lasiter@gmail.com
+	# Set your own identity before committing from this machine.
+	# Left generic on purpose — a real name/email here is an identity leak.
+	name = anon
+	email = anon@localhost
 [init]
 	defaultBranch = main
 [pull]
