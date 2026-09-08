@@ -114,7 +114,7 @@ It's **idempotent** — re-run any time to pick up new tools or after edits.
 | `12-dev-extras` | **uv** (Python) + ruff/mypy/black, **pnpm/yarn** (corepack) + **Bun**, **lazygit**/tig/git-lfs, DB clients (**pgcli**/DBeaver/psql/sqlite3/redis), **httpie**/**Bruno**, **zoxide**/**atuin**/tldr, just/watchexec/hyperfine/tokei, lazydocker/dive, **age/sops** |
 | `15-vmlab` | **KVM/QEMU + virt-manager** + libvirt, OVMF/swtpm (Win11 guests), user added to libvirt/kvm groups |
 | `20-browsers-comms` | Firefox ESR (+ hardening `user.js`), **Brave**, **Signal**, **Element**, Thunderbird, **WireGuard**/OpenVPN, ProtonVPN |
-| `25-anonymity` | **Tor** + torsocks + proxychains4, **Tor Browser**, mat2 (metadata scrub), nyx — pairs with your homevpn/Whonix |
+| `25-anonymity` | **Tor**/torsocks/proxychains4, **Tor Browser** + **Mullvad Browser**, **dnscrypt-proxy** (encrypted DNS) + IPv6 leak-off, mat2, **kalitorify**, anti-forensics (BleachBit/secure-delete + `wipe-traces`), journald-in-RAM, boot hostname randomization, **`vpn-killswitch`** helper — see [docs/ANONYMITY.md](docs/ANONYMITY.md) |
 | `30-osint` | amass, theHarvester, recon-ng, spiderfoot, maltego, sherlock, **ProjectDiscovery suite** (subfinder/httpx/nuclei/dnsx/naabu/katana), holehe — pairs with your **ReconLens** stack |
 | `35-offensive` | **seclists**, ffuf/feroxbuster/gobuster, sqlmap, nikto, wpscan, **netexec**, impacket, **BloodHound**, responder, kerbrute, hashcat/john/hydra, **ghidra**, radare2, gdb+GEF, pwntools, metasploit, searchsploit |
 | `40-productivity` | **Obsidian**, **KeePassXC**, Bitwarden, VLC/mpv, Flameshot, LibreOffice, GIMP, OBS, coding fonts |
