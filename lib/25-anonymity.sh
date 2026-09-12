@@ -59,6 +59,7 @@ net.ipv6.conf.default.disable_ipv6=1
 EOF
 sysctl --system >/dev/null 2>&1 || true
 note "IPv6 off system-wide. If a network needs v6, delete /etc/sysctl.d/99-privacy-ipv6.conf"
+note "heads-up: with IPv6 off, a WireGuard config using 'AllowedIPs = ::/0' will fail wg-quick ('IPv6 is disabled on nexthop device') — use '0.0.0.0/0' for an IPv4-only tunnel"
 
 # =============================================================================
 # Mullvad Browser — Tor-Browser-grade anti-fingerprinting, over VPN/direct
