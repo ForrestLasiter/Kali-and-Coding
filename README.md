@@ -137,13 +137,13 @@ first and aborts early if there's no network.
 | `38-pivoting` | **chisel**, **ligolo-ng**, **sliver**, socat — *authorized engagements only* |
 | `40-productivity` | **Obsidian**, **KeePassXC**, Bitwarden, VLC/mpv, Flameshot, LibreOffice, GIMP, OBS, coding fonts |
 | `45-engagements` | **pandoc + LaTeX** (Markdown→PDF reports), CherryTree, `~/engagements` scaffold + **`new-engagement`** helper |
-| `50-hardening` | ufw default-deny, ssh off + hardened, **MAC randomization**, sysctl hardening, fail2ban, cautious auto-updates |
+| `50-hardening` | ufw default-deny, ssh off + hardened, **MAC randomization**, sysctl hardening, fail2ban, cautious auto-updates, **NM-owns-wifi fix** (neutralizes a leftover ifupdown wlan stanza that breaks Wi-Fi after the desktop installs) |
 | `52-hwtoken` | **YubiKey**/FIDO2 tooling (ykman, pcscd, pam-u2f/yubico) — PAM left for you to wire (lockout-safe) |
 | `54-keys` | **ed25519 SSH key** bootstrap + hardened `~/.ssh/config`, keychain agent, GPG hardening (key creation left to you) |
 | `60-hardware` | **auto-detected**: Intel/AMD microcode, GPU firmware/driver (Intel i915 · AMD · NVIDIA-flagged), **fwupd**, **TLP** + charge thresholds where supported, thermald, **fingerprint**, powertop, bluetooth |
 | `70-resilience` | **Timeshift** snapshots + **restic** encrypted backups, `snap-before-upgrade` + `backup-home` helper scripts |
 | `80-extras` | **Nerd Font** (prompt glyphs), **Flatpak/Flathub**, **Syncthing** (cloud-free vault/file sync across your own machines) |
-| `82-qol` | CLI: duf/dust/procs/sd/glow/fastfetch, **yazi**+nnn, navi+thefuck, **kitty**. Desktop (XFCE): **rofi** launcher, picom, **udiskie** automount, **gammastep** night light, Papirus+Arc themes, zathura/peek/xarchiver/gpick |
+| `82-qol` | CLI: duf/dust/procs/sd/glow/fastfetch, **yazi**+nnn, navi+thefuck, **kitty**. Desktop (XFCE): **rofi** launcher, picom, **udiskie** automount, **gammastep** night light, Papirus+Arc themes, zathura/peek/xarchiver/gpick. Also **disables brltty** (the braille service whose xbrlapi hook hangs graphical login ~135s) |
 | `90-dotfiles` | `.zshrc`, `.tmux.conf`, `.gitconfig`, starship, nvim config, telemetry-off VSCodium `settings.json` (backs up existing files) |
 | `95-firstboot` | installs **`first-boot-checklist`** — interactive walk-through of the post-install manual steps |
 

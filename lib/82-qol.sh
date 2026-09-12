@@ -107,4 +107,15 @@ ${_c_blue}[*]${_c_reset} QoL notes:
       manual 'lat:lon' in ~/.config/gammastep/config.ini (location-provider=manual).
 EOF
 
+# --- disable brltty: prevents the multi-minute graphical-login hang ----------
+# brltty ships with kali-linux-default; its /etc/X11/Xsession.d/90xbrlapi hook
+# blocks the Xsession ~135s waiting on braille hardware that isn't there. This
+# is the classic "Kali login hangs for minutes after the password" bug.
+if [[ -f /etc/X11/Xsession.d/90xbrlapi ]]; then
+  install -d /etc/X11/Xsession.d.disabled
+  mv -f /etc/X11/Xsession.d/90xbrlapi /etc/X11/Xsession.d.disabled/ \
+    && ok "disabled 90xbrlapi (prevents the multi-minute login hang)"
+fi
+systemctl mask brltty.service brltty.path brltty-udev.service >/dev/null 2>&1 || true
+
 ok "qol module complete"

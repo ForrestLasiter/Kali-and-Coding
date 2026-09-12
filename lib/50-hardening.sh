@@ -37,6 +37,25 @@ EOF
 systemctl reload NetworkManager 2>/dev/null || true
 ok "MAC randomization configured (reconnect wifi to apply)"
 
+# --- ensure NetworkManager owns wifi ----------------------------------------
+# A minimal-installer wlan stanza in /etc/network/interfaces makes systemd run
+# ifup@wlanX at boot, which starts its own wpa_supplicant and beats NM to the
+# card — the card then shows 'unmanaged' and wifi dies once the desktop lands.
+# Neutralize any such stanza (backup first) and stop the per-interface unit.
+IFCFG=/etc/network/interfaces
+if [[ -f "$IFCFG" ]] && grep -qsE '^[[:space:]]*(allow-hotplug|auto|iface)[[:space:]]+wl' "$IFCFG"; then
+  info "neutralizing leftover ifupdown wlan stanza (conflicts with NetworkManager)"
+  cp -a "$IFCFG" "${IFCFG}.kitbak-$(date +%s)"
+  awk '
+    /^[[:space:]]*(allow-hotplug|auto|iface)[[:space:]]+wl/ {print "#kit-disabled "$0; blk=1; next}
+    blk==1 && /^[[:space:]]+[^[:space:]#]/               {print "#kit-disabled "$0; next}
+    {blk=0; print}
+  ' "$IFCFG" > "${IFCFG}.kit" && mv "${IFCFG}.kit" "$IFCFG"
+  systemctl mask ifup@wlan0.service >/dev/null 2>&1 || true
+  systemctl restart NetworkManager 2>/dev/null || true
+  ok "wlan handed to NetworkManager (never run 'systemctl enable wpa_supplicant' on Kali)"
+fi
+
 # --- automatic security updates ---------------------------------------------
 # NOTE: Kali is a rolling distro; unattended full upgrades can break tools.
 # We enable download-only + security-ish behavior and leave install to you.
