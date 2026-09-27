@@ -4,6 +4,17 @@ All notable changes to this kit. Format loosely follows Keep a Changelog.
 
 ## [Unreleased]
 
+### Added
+- **Practice Range (`16-range`).** New `range` CLI that spins up
+  deliberately-vulnerable targets on your own laptop for legal practice:
+  `range up juice-shop`, `range up dvwa` (Docker), and `range import/up
+  metasploitable2` (KVM). Everything runs on an **isolated** network — Docker
+  targets publish to `127.0.0.1` only on a no-egress internal network; VM
+  targets sit on a host-only libvirt network (`192.168.66.0/24`, no LAN/internet
+  route). `range reset` returns a target to a clean state (container recreate, or
+  a `range-clean` VM snapshot). Builds on `15-vmlab` and the Docker install from
+  `10-dev`. An `ad-lab` guided path is documented in `docs/RANGE.md`.
+
 ### Changed
 - **Generalized for any UEFI laptop.** `60-thinkpad` → `60-hardware`, which
   auto-detects CPU vendor (Intel/AMD microcode), GPU (Intel/AMD firmware; NVIDIA

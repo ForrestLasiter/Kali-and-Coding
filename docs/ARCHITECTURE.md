@@ -13,7 +13,7 @@ flowchart TD
     BIOS --> INST["Kali install →<br/>Guided encrypted LVM = LUKS FDE"]
     INST --> CLONE["git clone the repo"]
     CLONE --> PROV["sudo ./provision.sh"]
-    PROV --> MODS["22 modules run in order"]
+    PROV --> MODS["23 modules run in order"]
     MODS --> RB["reboot"]
     RB --> POST["fwupd firmware · enroll fingerprint<br/>Timeshift snapshot · DNS/IP leak tests"]
     POST --> DONE([Ready to use])
@@ -83,6 +83,7 @@ flowchart TD
       D1["10-dev<br/>zsh · VSCodium · Docker · Go · Node · Rust · gh"]
       D2["12-dev-extras<br/>uv · pnpm/bun · lazygit · DB/API · shell QoL"]
       D3["15-vmlab<br/>KVM/virt-manager · whonix-import"]
+      D4["16-range<br/>isolated vuln lab · juice-shop/dvwa/metasploitable"]
     end
 
     subgraph SEC["Security · Privacy · Offense"]

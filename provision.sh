@@ -50,6 +50,7 @@ MODULES=(
   "10-dev"
   "12-dev-extras"
   "15-vmlab"
+  "16-range"
   "20-browsers-comms"
   "25-anonymity"
   "30-osint"
